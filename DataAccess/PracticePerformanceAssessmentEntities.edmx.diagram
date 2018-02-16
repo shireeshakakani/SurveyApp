@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f4d4440dca604b1d9d826bb5e65cfd15" Name="Diagram1" ZoomLevel="103">
+        <EntityTypeShape EntityType="PPASurvey_DBModel.ExecutionDetail" Width="1.5" PointX="2.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.ExecutionSummary" Width="1.5" PointX="7.75" PointY="4.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Practice" Width="1.5" PointX="10" PointY="1" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Rule" Width="1.5" PointX="0.75" PointY="6.5" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.SectionMaster" Width="1.5" PointX="0.75" PointY="1.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Source_InputData" Width="1.5" PointX="5.75" PointY="9" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Source_InputDataBenchMarkSource" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Source_InputDataSave" Width="1.5" PointX="2.75" PointY="10.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.SubQuestion" Width="1.5" PointX="5.25" PointY="1.625" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.SurveyQuestion" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.SurveyTbl" Width="1.5" PointX="7.75" PointY="1.125" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.sysdiagram" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Target_OutputData" Width="1.5" PointX="8" PointY="8.25" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.YearMaster" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AcctRecDaysOutstanding" Width="1.5" PointX="10.75" PointY="10.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnCLSalesPerCLExam" Width="1.5" PointX="11.75" PointY="4.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnGrossRevPerFTEOD__000_" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnMedEyeCareVisitPer1000" Width="1.5" PointX="12.75" PointY="7.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnMrktSpendPerComplExam" Width="1.5" PointX="12.75" PointY="10.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnPharmRxPer1000" Width="1.5" PointX="13.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnStaffHrsPerAnnODHrs" Width="1.5" PointX="10.75" PointY="13.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnualOccupancyCostperSquareFoot_J" Width="1.5" PointX="12.75" PointY="13.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.lookup_averageframesmarkup_j" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AvgChangeInGrossRevenue_J" Width="1.5" PointX="14.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AvgCollectFeeRevPerCompl" Width="1.5" PointX="14.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AvgCostOfGoods_J" Width="1.5" PointX="14.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AvgFramesWholesaleCost_J" Width="1.5" PointX="15.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AvgGrossRevenue_J" Width="1.5" PointX="14.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_BestPracticeFINANCE" Width="1.5" PointX="16.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_BestPracticeMARKETING" Width="1.5" PointX="16.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_BestPracticeSTAFF" Width="1.5" PointX="16.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_BestPracticeTOTAL" Width="1.5" PointX="10.75" PointY="16.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ChairCostPerComplExam" Width="1.5" PointX="16.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLExamPercentTotalExam" Width="1.5" PointX="16.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLGrossProfitMargin" Width="1.5" PointX="17.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLNewFitsPer100CLExam" Width="1.5" PointX="18.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLRefitPercentCLExam" Width="1.5" PointX="18.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLSalesPercentGrossRev" Width="1.5" PointX="18.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CLWearerPercentActivePatients" Width="1.5" PointX="18.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CompleteExamsPer100Active" Width="1.5" PointX="12.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CompleteExamsPerODHour" Width="1.5" PointX="14.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ComputerLensesPercentofEyeWearRxes_J" Width="1.5" PointX="18.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ContactLensSales_J" Width="1.5" PointX="16.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_CostOfGoodsPercentOfGrossRev" Width="1.5" PointX="18.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_DailyDisposableLensPercentSoft" Width="1.5" PointX="19.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExamFeeNonCL" Width="1.5" PointX="20.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExamFeeSoftLensNOREFITT" Width="1.5" PointX="20.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExamFeeSoftNewFitMULTIFO" Width="1.5" PointX="20.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExamFeeSoftNewFitSPHERE" Width="1.5" PointX="20.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExamFeeSoftNewFitTORIC" Width="1.5" PointX="20.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByCostOfGoods_J" Width="1.5" PointX="20.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByEquipment_J" Width="1.5" PointX="21.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByGenOverhead_J" Width="1.5" PointX="10.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByInsurance_J" Width="1.5" PointX="12.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByInterest_J" Width="1.5" PointX="14.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByMarketing_J" Width="1.5" PointX="16.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByOccupancy_J" Width="1.5" PointX="18.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByRepairMaintenance_J" Width="1.5" PointX="20.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ExpenseRatioPercentageByStaffSalaries_J" Width="1.5" PointX="22.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyeExams_J" Width="1.5" PointX="22.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyeGlassesSales_J" Width="1.5" PointX="22.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyewearGrossProfitMargin" Width="1.5" PointX="22.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyewearRxCostOfGoods_J" Width="1.5" PointX="22.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyewearRxPer100ComplExam" Width="1.5" PointX="22.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_EyewearSalePercentageOfGrossRev" Width="1.5" PointX="22.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_FramesAvgWholesaleCostPerFrame_J" Width="1.5" PointX="23.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevenuePerCompleteExam" Width="1.5" PointX="24.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevenuePerODHour" Width="1.5" PointX="24.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevPerActivePatient" Width="1.5" PointX="24.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevPerEyewearRx" Width="1.5" PointX="10.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevPerNonODStaffHr" Width="1.5" PointX="24.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_GrossRevPerSqFt" Width="1.5" PointX="12.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_HighIndexLensPercentSpecLensRx" Width="1.5" PointX="14.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ManagedCarePercentGrossRev" Width="1.5" PointX="24.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_MedicalEyeCare_J" Width="1.5" PointX="16.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_MedicalEyeCareVisitPercentTotal" Width="1.5" PointX="24.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_MonthlySoftLensPercentWearers" Width="1.5" PointX="18.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_MrktSpendPercentGrossRev" Width="1.5" PointX="20.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_MultipleEyewearPurchasePercent" Width="1.5" PointX="24.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_NetIncomePercentGrossRev" Width="1.5" PointX="22.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_NewPatientExamPercentTotalExam" Width="1.5" PointX="24.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_NoGlareLensPercentSpecLensRx" Width="1.5" PointX="25.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_NonRefrFeePercentGrossRev" Width="1.5" PointX="26.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_OccupancyExpensePercentGrossRev" Width="1.5" PointX="26.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_OpticalDispensaryPercentOfTotalOfficeSpace_J" Width="1.5" PointX="26.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_OtherProductSales_J" Width="1.5" PointX="26.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentExamsProvideWMangCareDis" Width="1.5" PointX="26.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentofCompleteEyeExamsByCLExams_J" Width="1.5" PointX="26.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentofCompleteEyeExamsByEyeGlass_J" Width="1.5" PointX="26.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentofCompleteEyeExamsByHealthyEyeExams_J" Width="1.5" PointX="26.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentOfGrossRevenueAllHealthVisionPlans_J" Width="1.5" PointX="27.75" PointY="3.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentOfGrossRevenueDirectPatientPayments_J" Width="1.5" PointX="10.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentOfGrossRevenueFromMedicarePayments_J" Width="1.5" PointX="12.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentOfGrossRevenueVSPPayments_J" Width="1.5" PointX="14.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentOfNewPatientsAttracted" Width="1.5" PointX="16.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PercentPatientsCLExamPurchEyewea" Width="1.5" PointX="18.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PhotochrLensPercentofSpecLensRx" Width="1.5" PointX="20.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_PrescriptionSunwearPercentofEyeWearRxes_J" Width="1.5" PointX="22.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ProductSales_J" Width="1.5" PointX="24.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_ProgressiveLensAndPresbyopRx" Width="1.5" PointX="26.75" PointY="27.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_RecallMinPerComplExam" Width="1.5" PointX="28.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_RGPLensWearerPercentOfCLWeares_J" Width="1.5" PointX="28.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_SiliconeHydroLensWearPercentSoft" Width="1.5" PointX="28.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_SoftMultiFocPercentSoftLens" Width="1.5" PointX="28.75" PointY="12.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_SoftToricPercentSoftLens" Width="1.5" PointX="28.75" PointY="15.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_StaffExpensePercentOfGrossRev" Width="1.5" PointX="28.75" PointY="18.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_TotalProfFees_J" Width="1.5" PointX="28.75" PointY="21.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_WebsiteAnnualExpense" Width="1.5" PointX="28.75" PointY="24.75" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.SurveyTransaction" Width="1.5" PointX="28.75" PointY="27.75" />
+        <AssociationConnector Association="PPASurvey_DBModel.FK_Practice_SurveyTbl" />
+        <AssociationConnector Association="PPASurvey_DBModel.FK_SurveyQuestion_Rules1" />
+        <AssociationConnector Association="PPASurvey_DBModel.FK_SurveyQuestion_Section1" />
+        <AssociationConnector Association="PPASurvey_DBModel.FK_Target_OutputData_Source_InputData" />
+        <AssociationConnector Association="PPASurvey_DBModel.FK_SubQuestion_SurveyQuestion" />
+        <EntityTypeShape EntityType="PPASurvey_DBModel.Lookup_AnnTotalEyeExamsPer1000Patient" Width="1.5" PointX="30.375" PointY="3.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

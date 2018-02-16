@@ -1,0 +1,96 @@
+﻿Format of the initialization string does not conform to specification starting at index 192.
+Could not parse the configuration file. The error message is: 'Format of the initialization string does not conform to specification starting at index 192.'. Try editing the file manually and then saving it.
+The model was generated with warnings or errors.PracticePerformanceAssessmentEntities.edmxPlease see the Error List for more details. These issues must be fixed before running your application.
+Loading metadata from the database took 00:00:00.6722003.
+Generating the model took 00:00:05.7841610.
+Unable to update the App.Config file because of the following exception: 'Format of the initialization string does not conform to specification starting at index 192.'
+Writing the .edmx file took 00:00:00.0056844.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+Format of the initialization string does not conform to specification starting at index 192.
+The model was generated with warnings or errors.PracticePerformanceAssessmentEntities.edmxPlease see the Error List for more details. These issues must be fixed before running your application.
+Loading metadata from the database took 00:00:00.6985215.
+Generating the model took 00:00:02.7027403.
+Unable to update the App.Config file because of the following exception: 'Format of the initialization string does not conform to specification starting at index 192.'
