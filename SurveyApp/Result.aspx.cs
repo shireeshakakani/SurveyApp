@@ -30,7 +30,7 @@ namespace SurveyApp
 				string result = Request.QueryString["Result"];
 				if (result == "Y")
 				{
-					lblmsg.Text = "The Practice Performance detailed report, executive summary,one page infographic and KeyMetrics-Spectacle Report are in process and will be available soon.<br>In case of any queries, you can write to " + "info@essilor.com";
+					lblmsg.Text = "Thank you for completing the questionnaire!<br>You can now download the Practice Performance Assessment reports by clicking the Download Report button below. In case of any further queries please email us at " + "info@essilor.com";
 					lblmsg.Attributes.Remove("class");
 					lblmsg.Attributes.Add("class", "validation-errorsuccess");
 				}

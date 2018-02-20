@@ -353,7 +353,7 @@
 
 											</div>
 											<div style="text-align: center;">
-												<asp:Button runat="server" ID="btnDownload" Text="Download Reports" class="submit-buttonhome" OnClick="btnDownload_Click" />
+												<asp:Button runat="server" ID="btnDownload" Text="Download Report" class="submit-buttonhome" OnClick="btnDownload_Click" />
 
 											</div>
 										</div>

@@ -2250,7 +2250,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					else
 					{
 						// Check DIV/0;
-						if (objInputData.colQ14 == 0 || (objInputData.colQ24 == null))
+						if ((objInputData.colQ14 == 0 && objInputData.colQ14 == null) || (objInputData.colQ24 == null))
 							objOutputData.col6e = 0;
 						else
 							objOutputData.col6e = Math.Round(((Convert.ToDecimal(objInputData.colQ24) / Convert.ToDecimal(objInputData.colQ14)) * 54 * (Convert.ToDecimal(objInputData.colQ12) / 100) - Convert.ToDecimal(objInputData.colQ24)), 2);
@@ -6426,7 +6426,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 						fnd.Text = "<<Customer_Name>>";
 						fnd.Replacement.Text = objReport.lstInput[0].colQ74;
-
+						this.FindAndReplace(wordApp, "<<Customer_Name>>", objReport.lstInput[0].colQ74);
 						fnd.Execute(Replace: Microsoft.Office.Interop.Word.WdReplace.wdReplaceAll);
 
 						foreach (Section aSection in wordApp.ActiveDocument.Sections)
@@ -6447,9 +6447,9 @@ namespace PracticePerformanceAssessmentDataAccess
 						string day = dt.Day.ToString();
 						string month = dt.ToString("MMMM", CultureInfo.InvariantCulture);
 						string year = dt.Year.ToString();
-						this.FindAndReplace(wordApp, "<<dd>>", day);
-						this.FindAndReplace(wordApp, "<<mm>>", month);
-						this.FindAndReplace(wordApp, "<<yyyy>>", year);
+						this.FindAndReplace(wordApp, "<<DD>>", day);
+						this.FindAndReplace(wordApp, "<<MM>>", month);
+						this.FindAndReplace(wordApp, "<<YYYY>>", year);
 
 						int currentYearValue = Convert.ToInt32(System.Web.HttpContext.Current.Session["YearName"]);
 						string previousYear = Convert.ToString(currentYearValue - 1);
@@ -6480,12 +6480,33 @@ namespace PracticePerformanceAssessmentDataAccess
 								pictureName = imagelocation + @"\Spectacle_Graph_1.png";  // @"~\SurveyApp\SurveyApp\ImageChart\Spectacle_Graph_1.png";
 
 								//percentages for pie chart
-								decimal totalGrossRevenue = grossRev;
-								decimal presEyewarePerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26i == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26i)).ToString("#,0"))) / totalGrossRevenue) * 100;
-								decimal eyeExamPerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26 == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26)).ToString("#,0"))) / totalGrossRevenue) * 100;
-								decimal medEyeCarePerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26b == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26b)).ToString("#,0"))) / totalGrossRevenue) * 100;
-								decimal othersPerc = totalGrossRevenue == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26c == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26c)).ToString("#,0"))) + (Convert.ToDecimal(objReport.lstInput[0].colQ26h == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26h)).ToString("#,0")))) / totalGrossRevenue) * 100;
-								decimal contactlensesPerc = totalGrossRevenue == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26a == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26a)).ToString("#,0"))) + (Convert.ToDecimal(objReport.lstInput[0].colQ26g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26g)).ToString("#,0")))) / totalGrossRevenue) * 100;
+								//decimal totalGrossRevenue = grossRev;
+								//decimal presEyewarePerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26i == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26i)).ToString("#,0"))) / totalGrossRevenue) * 100;
+								//decimal eyeExamPerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26 == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26)).ToString("#,0"))) / totalGrossRevenue) * 100;
+								//decimal medEyeCarePerc = totalGrossRevenue == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ26b == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26b)).ToString("#,0"))) / totalGrossRevenue) * 100;
+								//decimal othersPerc = totalGrossRevenue == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26c == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26c)).ToString("#,0"))) + (Convert.ToDecimal(objReport.lstInput[0].colQ26h == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26h)).ToString("#,0")))) / totalGrossRevenue) * 100;
+								//decimal contactlensesPerc = totalGrossRevenue == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26a == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26a)).ToString("#,0"))) + (Convert.ToDecimal(objReport.lstInput[0].colQ26g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26g)).ToString("#,0")))) / totalGrossRevenue) * 100;
+
+
+								decimal totalGrossRevenue = Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q24 > 0).Select(x => x.Q24 ?? 0).Average()); ;
+								decimal presEyewarePerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26i > 0).Select(x => x.Q26i ?? 0).Average() / totalGrossRevenue) * 100;
+
+								decimal eyeExamPerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26 > 0).Select(x => x.Q26 ?? 0).Average() / totalGrossRevenue) * 100;
+
+								decimal medEyeCarePerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26b > 0).Select(x => x.Q26b ?? 0).Average() / totalGrossRevenue) * 100;
+
+								decimal othersPerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26c > 0).Select(x => x.Q26c ?? 0).Average() / totalGrossRevenue +
+									(db.Source_InputDataBenchMarkSource.Where(x => x.Q26h > 0).Select(x => x.Q26h ?? 0).Average()) / totalGrossRevenue) * 100;
+
+								decimal contactlensesPerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26a > 0).Select(x => x.Q26a ?? 0).Average() / totalGrossRevenue +
+									(db.Source_InputDataBenchMarkSource.Where(x => x.Q26g > 0).Select(x => x.Q26g ?? 0).Average()) / totalGrossRevenue) * 100;
+
+
+
+								if (presEyewarePerc + eyeExamPerc + medEyeCarePerc + othersPerc + contactlensesPerc < 100)
+								{
+									othersPerc = 100 - (presEyewarePerc + eyeExamPerc + medEyeCarePerc + othersPerc + contactlensesPerc);
+								}
 
 								List<decimal> percentsList = new List<decimal>();
 								percentsList.Add(Math.Round(presEyewarePerc));
@@ -6493,6 +6514,17 @@ namespace PracticePerformanceAssessmentDataAccess
 								percentsList.Add(Math.Round(medEyeCarePerc));
 								percentsList.Add(Math.Round(othersPerc));
 								percentsList.Add(Math.Round(contactlensesPerc));
+
+								int maxIndex = 0;
+								if (presEyewarePerc + eyeExamPerc + medEyeCarePerc + othersPerc + contactlensesPerc > 100)
+								{
+									decimal maxValue = percentsList.Max();
+									maxIndex = percentsList.IndexOf(maxValue);
+									percentsList[maxIndex] = Math.Round((percentsList.Max() - ((presEyewarePerc + eyeExamPerc + medEyeCarePerc + othersPerc + contactlensesPerc) - 100)));
+								}
+
+
+
 
 								//list of colors
 								List<Color> pieColors = new List<Color>();
@@ -6505,21 +6537,27 @@ namespace PracticePerformanceAssessmentDataAccess
 								//list of description of the slices
 
 								List<string> descriptions = new List<string>();
-								descriptions.Add("Prescription Eyewear " + presEyewarePerc + "%");
-								descriptions.Add("Eye Exam " + eyeExamPerc + "%");
-								descriptions.Add("Medical Eye Care " + medEyeCarePerc + "%");
-								descriptions.Add("Others " + othersPerc + "%");
-								descriptions.Add("Contact Lenses " + contactlensesPerc + "%");
+								//descriptions.Add("Prescription Eyewear " + presEyewarePerc + "%");
+								//descriptions.Add("Eye Exam " + eyeExamPerc + "%");
+								//descriptions.Add("Medical Eye Care " + medEyeCarePerc + "%");
+								//descriptions.Add("Others " + othersPerc + "%");
+								//descriptions.Add("Contact Lenses " + contactlensesPerc + "%");
+
+								descriptions.Add("Prescription Eyewear");
+								descriptions.Add("Eye Exam");
+								descriptions.Add("Medical Eye Care");
+								descriptions.Add("Others");
+								descriptions.Add("Contact Lenses");
 
 								string graphName = i1 == 82 ? "Optometric Practice Sources of Revenue" : "Sources of Revenue";
-								string status = CreatePieChart(graphName, percentsList, pieColors, descriptions, pictureName);
+								string status = CreatePieChart(100, graphName, percentsList, pieColors, descriptions, pictureName);
 
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
 									shape.Width = 400;
-									shape.Height = 300;
+									shape.Height = 400;
 								}
 							}
 							if (i1 == 11)
@@ -6743,8 +6781,8 @@ namespace PracticePerformanceAssessmentDataAccess
 								string graphHeader = "Medical Eye Care Visits by Type \n (% of Total Medical Eye Care Visits)";
 								List<string> xAxisData = new List<string>() {  "Glaucoma","Dry Eye","Ocular allergy",
 																				 "Ocular Infection",
-																				 "Cataract co-management",
-																				 "Refractive surgery co-management",
+																				 "Cataract \n co-management",
+																				 "Refractive \n surgery \n co-management",
 																				 "Foreign body removal",
 																				 };
 
@@ -6765,7 +6803,7 @@ namespace PracticePerformanceAssessmentDataAccess
 								graphData.Add(Math.Round(objReport.lstInput[0].colQ20f == null ? 0 : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ20f)) / totalMedicalEyeCareVisits));
 								graphData.Add(Math.Round(objReport.lstInput[0].colQ20g == null ? 0 : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ20g)) / totalMedicalEyeCareVisits));
 
-								string status = CreateVerticalGraph(pictureName, graphHeader, xAxisData, graphData, true);
+								string status = CreateVerticalGraph(120, pictureName, graphHeader, xAxisData, graphData, true);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -6799,17 +6837,20 @@ namespace PracticePerformanceAssessmentDataAccess
 								//list of description of the slices
 
 								List<string> descriptions = new List<string>();
-								descriptions.Add("Health Vision Plans " + healthVisionPlansPerc + "%");
-								descriptions.Add("Direct From Pateints " + directPateintsPerc + "%");
-								descriptions.Add("Medicare " + medicarePerc + "%");
+								//descriptions.Add("Health Vision Plans " + healthVisionPlansPerc + "%");
+								//descriptions.Add("Direct From Pateints " + directPateintsPerc + "%");
+								//descriptions.Add("Medicare " + medicarePerc + "%");
+								descriptions.Add("Health Vision Plans");
+								descriptions.Add("Direct From Pateints");
+								descriptions.Add("Medicare");
 
-								string status = CreatePieChart("MBA Participant Source of Payments", percentsList, pieColors, descriptions, pictureName);
+								string status = CreatePieChart(100, "MBA Participant Source of Payments", percentsList, pieColors, descriptions, pictureName);
 
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
-									shape.Width = 400;
+									shape.Width = 300;
 									shape.Height = 300;
 								}
 
@@ -6849,17 +6890,17 @@ namespace PracticePerformanceAssessmentDataAccess
 
 								//list of colors
 								List<Color> pieColors1 = new List<Color>();
-								pieColors.Add(Color.FromArgb(255, 51, 102, 153));
-								pieColors.Add(Color.FromArgb(240, 51, 102, 153));
-								pieColors.Add(Color.FromArgb(225, 51, 102, 153));
+								pieColors1.Add(Color.FromArgb(255, 51, 102, 153));
+								pieColors1.Add(Color.FromArgb(240, 51, 102, 153));
+								pieColors1.Add(Color.FromArgb(225, 51, 102, 153));
 
 
 								//list of description of the slices
 
 								List<string> descriptions1 = new List<string>();
-								descriptions.Add("Bifocal/Trifocal " + bitrifocal + "%");
-								descriptions.Add("Progressive " + progressive + "%");
-								descriptions.Add("Other " + progressive + "%");
+								descriptions1.Add("Bifocal/Trifocal " + bitrifocal + "%");
+								descriptions1.Add("Progressive " + progressive + "%");
+								descriptions1.Add("Other " + progressive + "%");
 
 								string status = CreateTwoPieCharts("Spectacle Lens Rxes (% of total eyewear Rxes)", percentsList, pieColors, descriptions, percentsList1, pieColors1, descriptions1, pictureName);
 								if (status == "success")
@@ -6937,7 +6978,7 @@ namespace PracticePerformanceAssessmentDataAccess
 							}
 							if (i1 == 43)
 							{
-								pictureName = imagelocation + @"\KeyMetrics_FramesUnitMix_1.png";
+								pictureName = imagelocation + @"\KeyMetrics_FramesInventoryTurnover_1.png";
 								string graphHeader = "Frames Inventory and Turnover";
 								List<decimal> framesInInv = new List<decimal>();
 								List<decimal> annComSpecRx = new List<decimal>();
@@ -7063,7 +7104,7 @@ namespace PracticePerformanceAssessmentDataAccess
 							}
 							if (i1 == 44)
 							{
-								pictureName = imagelocation + @"\KeyMetrics_FramesUnitMix_1.png";
+								pictureName = imagelocation + @"\KeyMetrics_FramesInventoryGuideline_1.png";
 								string graphHeader = "Frames Inventory Guideline";
 								List<string> medianAnnFrames = new List<string>();
 								medianAnnFrames = GetExternalTableValues("ES_Frames_Inventory_Guidelines").Values.ToList();
@@ -7132,7 +7173,7 @@ namespace PracticePerformanceAssessmentDataAccess
 								graphData.Add(Math.Round(data));
 
 
-								string status = CreateVerticalGraph(pictureName, graphHeader, xAxisData, graphData, true);
+								string status = CreateVerticalGraph(100, pictureName, graphHeader, xAxisData, graphData, true);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -7152,7 +7193,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 								bool isXAxisDrawn = true;
 
-								string status = CreateHorizontalBarGraph(pictureName, graphHeader, yAxisData, graphData, isXAxisDrawn);
+								string status = CreateHorizontalBarGraph(100, pictureName, graphHeader, yAxisData, graphData, isXAxisDrawn);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -7192,7 +7233,7 @@ namespace PracticePerformanceAssessmentDataAccess
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
 									shape.Width = 500;
-									shape.Height = 350;
+									shape.Height = 300;
 								}
 							}
 							if (i1 == 66) //Full Time Office Managers
@@ -7218,7 +7259,7 @@ namespace PracticePerformanceAssessmentDataAccess
 								data = db.Source_InputDataBenchMarkSource.Where(x => x.Q24 > 1500000 && x.Q24 <= 2200000).Count() == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q24 > 1500000 && x.Q24 <= 2200000 && x.Q97 == true).Count() / db.Source_InputDataBenchMarkSource.Where(x => x.Q24 > 1500000 && x.Q24 <= 2200000).Count()) * 100;
 								graphData.Add(Math.Round(data));
 
-								string status = CreateVerticalGraph(pictureName, graphHeader, xAxisData, graphData, true);
+								string status = CreateVerticalGraph(100, pictureName, graphHeader, xAxisData, graphData, true);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -7230,40 +7271,40 @@ namespace PracticePerformanceAssessmentDataAccess
 							}
 							if (i1 == 68)
 							{
-								pictureName = imagelocation + @"\KeyMetrics_FramesUnitMix_1.png";
+								pictureName = imagelocation + @"\KeyMetrics_StaffHourlyandAnnualSalaries_1.png";
 								string graphHeader = "Staff Hourly and Annual Salaries by Position";
 								List<decimal> avgHourlySal = new List<decimal>();
 
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95a != null).Select(x => x.Q95a).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95b != null).Select(x => x.Q95b).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95c != null).Select(x => x.Q95c).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95d != null).Select(x => x.Q95d).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95e != null).Select(x => x.Q95e).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95f != null).Select(x => x.Q95f).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95g != null).Select(x => x.Q95g).Average().Value));
-								avgHourlySal.Add(Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q95h != null).Select(x => x.Q95h).Average().Value));
+								avgHourlySal.Add(22.33m);
+								avgHourlySal.Add(13.21m);
+								avgHourlySal.Add(14.73m);
+								avgHourlySal.Add(16.80m);
+								avgHourlySal.Add(17.73m);
+								avgHourlySal.Add(13.13m);
+								avgHourlySal.Add(17.19m);
+								avgHourlySal.Add(15.15m);
 
 
 								List<decimal> medianHourlySal = new List<decimal>();
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95a != null).Select(x => x.Q95a ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95b != null).Select(x => x.Q95b ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95c != null).Select(x => x.Q95c ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95d != null).Select(x => x.Q95d ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95e != null).Select(x => x.Q95e ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95f != null).Select(x => x.Q95f ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95g != null).Select(x => x.Q95g ?? 0).ToList()));
-								medianHourlySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95h != null).Select(x => x.Q95h ?? 0).ToList()));
+								medianHourlySal.Add(20.48m);
+								medianHourlySal.Add(12.71m);
+								medianHourlySal.Add(14.40m);
+								medianHourlySal.Add(16.29m);
+								medianHourlySal.Add(17.25m);
+								medianHourlySal.Add(12.64m);
+								medianHourlySal.Add(16.12m);
+								medianHourlySal.Add(15.00m);
 
 								medAllSal = GetListMedian(medianHourlySal);
 								List<decimal> medianAnnuallySal = new List<decimal>();
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95a != null).Select(x => x.Q95a).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95b != null).Select(x => x.Q95b).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95c != null).Select(x => x.Q95c).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95d != null).Select(x => x.Q95d).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95e != null).Select(x => x.Q95e).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95f != null).Select(x => x.Q95f).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95g != null).Select(x => x.Q95g).ToList()));
-								//medianAnnuallySal.Add(GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q95h != null).Select(x => x.Q95h).ToList()));
+								medianAnnuallySal.Add(42598m);
+								medianAnnuallySal.Add(26437m);
+								medianAnnuallySal.Add(29952m);
+								medianAnnuallySal.Add(33883m);
+								medianAnnuallySal.Add(35880m);
+								medianAnnuallySal.Add(26291m);
+								medianAnnuallySal.Add(33350m);
+								medianAnnuallySal.Add(31200m);
 
 								string status = CreateStaffHourlySalariesByPositionDataGraph(pictureName, graphHeader, avgHourlySal, medianHourlySal, medianAnnuallySal);
 								if (status == "success")
@@ -7384,7 +7425,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 								graphData.Add(Math.Round(PerChangeInCostOfFrames));
 
-								string status = CreateHorizontalBarGraph(pictureName, graphHeader, yAxisData, graphData);
+								string status = CreateHorizontalBarGraph(140, pictureName, graphHeader, yAxisData, graphData);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -7441,7 +7482,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 								graphData.Add(Math.Round(PerChangeInTotalProfFees));
 
-								string status = CreateHorizontalBarGraph(pictureName, graphHeader, yAxisData, graphData);
+								string status = CreateHorizontalBarGraph(130, pictureName, graphHeader, yAxisData, graphData);
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
@@ -7455,12 +7496,21 @@ namespace PracticePerformanceAssessmentDataAccess
 								pictureName = imagelocation + @"\KeyMetrics_PieChart_Graph_7.png";
 
 								//percentages for pie chart
-								decimal completeEyeExamsPerc = grossRev == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ14 == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ14)).ToString("#,0"))) / grossRev) * 100;
-								decimal totalProdSalePerc = grossRev == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26e == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26e)).ToString("#,0")))
-														   + (Convert.ToDecimal(objReport.lstInput[0].colQ26f == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26f)).ToString("#,0")))
-														   + (Convert.ToDecimal(objReport.lstInput[0].colQ26g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26g)).ToString("#,0"))))
-														   / grossRev) * 100;
-								decimal otherPerc = grossRev == 0 ? 0 : ((grossRev - (completeEyeExamsPerc + totalProdSalePerc)) / grossRev) * 100;
+								//decimal completeEyeExamsPerc = grossRev == 0 ? 0 : ((Convert.ToDecimal(objReport.lstInput[0].colQ14 == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ14)).ToString("#,0"))) / grossRev) * 100;
+								//decimal totalProdSalePerc = grossRev == 0 ? 0 : (((Convert.ToDecimal(objReport.lstInput[0].colQ26e == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26e)).ToString("#,0")))
+								//						   + (Convert.ToDecimal(objReport.lstInput[0].colQ26f == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26f)).ToString("#,0")))
+								//						   + (Convert.ToDecimal(objReport.lstInput[0].colQ26g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ26g)).ToString("#,0"))))
+								//						   / grossRev) * 100;
+								//decimal otherPerc = grossRev == 0 ? 0 : ((grossRev - (completeEyeExamsPerc + totalProdSalePerc)) / grossRev) * 100;
+
+								decimal totalGrossRevenue = Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q24 > 0).Select(x => x.Q24 ?? 0).Average());
+								decimal completeEyeExamsPerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26c > 0).Select(x => x.Q26c ?? 0).Average() / totalGrossRevenue) * 100;
+								decimal totalProdSalePerc = totalGrossRevenue == 0 ? 0 : (db.Source_InputDataBenchMarkSource.Where(x => x.Q26f > 0).Select(x => x.Q26f ?? 0).Average() / totalGrossRevenue +
+									(db.Source_InputDataBenchMarkSource.Where(x => x.Q26g > 0).Select(x => x.Q26g ?? 0).Average()) / totalGrossRevenue + db.Source_InputDataBenchMarkSource.Where(x => x.Q26h > 0).Select(x => x.Q26h ?? 0).Average() / totalGrossRevenue) * 100;
+
+								decimal otherPerc = 100 - (completeEyeExamsPerc + totalProdSalePerc);
+
+
 
 
 								List<decimal> percentsList = new List<decimal>();
@@ -7478,25 +7528,28 @@ namespace PracticePerformanceAssessmentDataAccess
 								//list of description of the slices
 
 								List<string> descriptions = new List<string>();
-								descriptions.Add("Complete Eye Exams " + completeEyeExamsPerc + "%");
-								descriptions.Add("Total Product sales " + totalProdSalePerc + "%");
-								descriptions.Add("Other " + otherPerc + "%");
+								//descriptions.Add("Complete Eye Exams " + completeEyeExamsPerc + "%");
+								//descriptions.Add("Total Product sales " + totalProdSalePerc + "%");
+								//descriptions.Add("Other " + otherPerc + "%");
+								descriptions.Add("Complete Eye Exams");
+								descriptions.Add("Total Product sales");
+								descriptions.Add("Other");
 
-								string status = CreatePieChart("Percent of gross revenue from \n complete eye exams and from total product sales", percentsList, pieColors, descriptions, pictureName);
+								string status = CreatePieChart(120, "Percent of gross revenue from \n complete eye exams and total product sales", percentsList, pieColors, descriptions, pictureName);
 
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
 									shape.Width = 400;
-									shape.Height = 300;
+									shape.Height = 400;
 								}
 
 							}
 							if (i1 == 81) //Instrument Penetration
 							{
 								pictureName = imagelocation + @"\KeyMetrics_InstrumentPene_Graph_1.png";
-								string graphHeader = "Instrument Penetration (% of practices with one or more)";
+								string graphHeader = "Instrument Penetration (% of practices with one or more instruments)";
 								List<decimal> graphData = new List<decimal>();
 								List<string> yAxisData = new List<string>()
 								{
@@ -7566,18 +7619,21 @@ namespace PracticePerformanceAssessmentDataAccess
 								//list of description of the slices
 
 								List<string> descriptions = new List<string>();
-								descriptions.Add("Plastic " + plasticPerc + "%");
-								descriptions.Add("Polycarbonate " + polycarbonatePerc + "%");
-								descriptions.Add("Glass " + glassPerc + "%");
+								//descriptions.Add("Plastic " + plasticPerc + "%");
+								//descriptions.Add("Polycarbonate " + polycarbonatePerc + "%");
+								//descriptions.Add("Glass " + glassPerc + "%");
+								descriptions.Add("Plastic");
+								descriptions.Add("Polycarbonate");
+								descriptions.Add("Glass");
 
-								string status = CreatePieChart("Material (% of lens pairs)", percentsList, pieColors, descriptions, pictureName);
+								string status = CreatePieChart(100, "Material (% of lens pairs)", percentsList, pieColors, descriptions, pictureName);
 
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
 									shape.Width = 400;
-									shape.Height = 300;
+									shape.Height = 400;
 								}
 
 							}
@@ -7602,17 +7658,19 @@ namespace PracticePerformanceAssessmentDataAccess
 								//list of description of the slices
 
 								List<string> descriptions = new List<string>();
-								descriptions.Add("Progressive " + progressivePerc + "%");
-								descriptions.Add("Bifocal / Trifocal " + bifTrifocalPerc + "%");
+								//descriptions.Add("Progressive " + progressivePerc + "%");
+								//descriptions.Add("Bifocal / Trifocal " + bifTrifocalPerc + "%");
+								descriptions.Add("Progressive");
+								descriptions.Add("Bifocal / Trifocal");
 
-								string status = CreatePieChart("Design (% of lens pairs)", percentsList, pieColors, descriptions, pictureName);
+								string status = CreatePieChart(100, "Design (% of lens pairs)", percentsList, pieColors, descriptions, pictureName);
 
 								if (status == "success")
 								{
 									//aDoc.Bookmarks[i1].Range.Text = string.Empty;
 									var shape = aDoc.Bookmarks[i1].Range.InlineShapes.AddPicture(pictureName, false, true);
 									shape.Width = 400;
-									shape.Height = 300;
+									shape.Height = 400;
 								}
 
 							}
@@ -7620,6 +7678,10 @@ namespace PracticePerformanceAssessmentDataAccess
 						}
 
 						//-- msinghai --- Find And Replace Placeholders
+						this.FindAndReplace(wordApp, "<<DD>>", day);
+						this.FindAndReplace(wordApp, "<<MM>>", month);
+						this.FindAndReplace(wordApp, "<<YYYY>>", year);
+						this.FindAndReplace(wordApp, "<<Customer_Name>>", objReport.lstInput[0].colQ74);
 						decimal medGrossRev = GetLookUpValue("Lookup.AvgGrossRevenue_J", 50);
 						decimal activePatients = objReport.lstInput[0].colQ12 == null ? 0 : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ12));
 						this.FindAndReplace(wordApp, "<<Q24_MD>>", medGrossRev);
@@ -7697,17 +7759,17 @@ namespace PracticePerformanceAssessmentDataAccess
 						this.FindAndReplace(wordApp, "<<CLNewFitsPer100CLExam_MD>>", GetLookUpValue("Lookup.CLNewFitsPer100CLExam", 50));
 
 						decimal eyewearSaleMed = GetLookUpValue("Lookup.GrossRevPerEyewearRx", 50, "$");
-						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_MD>>", eyewearSaleMed);
+						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_MD>>", Math.Round(eyewearSaleMed, 2));
 
 						decimal eyewearSaleTD = GetLookUpValue("Lookup.GrossRevPerEyewearRx", 95, "$");
 						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_TD>>", eyewearSaleTD);
 						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_BD>>", GetLookUpValue("Lookup.GrossRevPerEyewearRx", 95, "$"));
 
-						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_MD%>", eyewearSaleMed == 0 ? 100 : (eyewearSaleTD - eyewearSaleMed) / eyewearSaleMed);
+						this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_MD%>>", Math.Round((eyewearSaleMed == 0 ? 100 : (eyewearSaleTD - eyewearSaleMed) / eyewearSaleMed)));
 						this.FindAndReplace(wordApp, "<<EyewearGrossProfitMargin_MD>>", GetLookUpValue("Lookup.EyewearGrossProfitMargin", 50));
 						decimal totalFramesInInv = db.Source_InputDataBenchMarkSource.Where(x => (x.Q34 > 0 || x.Q35 > 0)).Select(x => (x.Q34 + x.Q35) ?? 0).Average();
-						this.FindAndReplace(wordApp, "<<Q34_And_Q35>>", totalFramesInInv);
-						this.FindAndReplace(wordApp, "<<Q34_And_Q35_Times_Q36>>", totalFramesInInv * db.Source_InputDataBenchMarkSource.Where(x => x.Q36 > 0).Select(x => x.Q36 ?? 0).Average());
+						this.FindAndReplace(wordApp, "<<Q34_And_Q35_MD>>", Math.Round(totalFramesInInv, 2));
+						this.FindAndReplace(wordApp, "<<Q34_And_Q35_Times_Q36_All_MD>>", Math.Round(totalFramesInInv * db.Source_InputDataBenchMarkSource.Where(x => x.Q36 > 0).Select(x => x.Q36 ?? 0).Average(), 2));
 						this.FindAndReplace(wordApp, "<<FramesUnitSalesMixbyPricePoint_Retail300Above>>", GetLookUpValue("Lookup.EyewearSalePercentageOfGrossRev", 50));
 						this.FindAndReplace(wordApp, "<<AverageFramesMarkUp_MD>>", GetLookUpValue("lookup.averageframesmarkup_j", 50));
 						this.FindAndReplace(wordApp, "<<StaffHourlyandAnnualSalariesbyPosition:2009_MedianHourlySalary>>", medAllSal);
@@ -7716,7 +7778,7 @@ namespace PracticePerformanceAssessmentDataAccess
 						this.FindAndReplace(wordApp, "<<AnnualOccupancyCostperSquareFoot_80TH>>", GetLookUpValue("Lookup.AnnualOccupancyCostperSquareFoot_J", 80));
 
 						this.FindAndReplace(wordApp, "<<Q2_All_MD>>", GetListMedian(db.Source_InputDataBenchMarkSource.Where(x => x.Q2 > 0).Select(x => x.Q2 ?? 0).ToList()));
-						this.FindAndReplace(wordApp, "<<FramesTurnover_Median>>", annFrmsTrnovrMed);
+						this.FindAndReplace(wordApp, "<<FramesTurnover_Median>>", Math.Round(annFrmsTrnovrMed, 2));
 						this.FindAndReplace(wordApp, "<<PlanoSunglassInInv_Q38_Avg>>", Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q38 > 0).Select(x => x.Q38 ?? 0).Average()));
 						this.FindAndReplace(wordApp, "<<ES_Gross_Revenue_per_Square_Foot_by_Practice_Size_for_refrection_MD>>", GetListMedian(GetExternalTableValues("ES_Gross_Revenue_per_Square_Foot_by_Practice_Size_for_refrection").Select(x => Convert.ToDecimal(x.Value)).ToList()));
 
@@ -7728,21 +7790,23 @@ namespace PracticePerformanceAssessmentDataAccess
 						this.FindAndReplace(wordApp, "<<SpectacleLensRxes_Q31a>>", singleVisPerc);
 						this.FindAndReplace(wordApp, "<<SpectacleLensRxes_Q31b>>", presBioPerc);
 
-						this.FindAndReplace(wordApp, "<<ManagedCare_HealthVisionPlans>>", healthVisionPlansPerc);
-						this.FindAndReplace(wordApp, "<<ManagedCare_Q27>>", medicarePerc);
-						this.FindAndReplace(wordApp, "<<ManagedCare_Q27d>>", directPateintsPerc);
-						this.FindAndReplace(wordApp, "<<AnnualSupplyPurchasebySoftLensModality_Q39b>>", twoWeekVal);
+						this.FindAndReplace(wordApp, "<<ManagedCare_HealthVisionPlans>>", Math.Round(healthVisionPlansPerc));
+						this.FindAndReplace(wordApp, "<<ManagedCare_Q27>>", Math.Round(medicarePerc));
+						this.FindAndReplace(wordApp, "<<ManagedCare_Q27d>>", Math.Round(directPateintsPerc));
+						this.FindAndReplace(wordApp, "<<AnnualSupplyPurchasebySoftLensModality_Q39b>>", Math.Round(twoWeekVal, 2));
 						this.FindAndReplace(wordApp, "<<PercentPatientsCLExamPurchEyewea_MD>>", GetLookUpValue("Lookup.PercentPatientsCLExamPurchEyewea", 50, "%"));
 						this.FindAndReplace(wordApp, "<<NetIncome%_GrossRev_Avg>>", Math.Round(GetAllLookUpValues("Lookup.NetIncomePercentGrossRev").Where(x => x > 0).Average()));
-						this.FindAndReplace(wordApp, "<<FramesSold_Q28_MD>>", db.Source_InputDataBenchMarkSource.Where(x => (x.Q28 > 0 || x.Q29 > 0)).Select(x => (x.Q28 + x.Q29) ?? 0).Average());
-						this.FindAndReplace(wordApp, "<<EyeWearGrossProfit>>", db.Source_InputDataBenchMarkSource.Where(x => x.Q26f > 0).Select(x => (x.Q26f - (x.Q52a + x.Q52b + x.Q52c + x.Q52d + x.Q52e)) ?? 0).Average());
+						this.FindAndReplace(wordApp, "<<FramesSold_Q28_MD>>", Math.Round(db.Source_InputDataBenchMarkSource.Where(x => (x.Q28 > 0 || x.Q29 > 0)).Select(x => (x.Q28 + x.Q29) ?? 0).Average(), 2));
+						this.FindAndReplace(wordApp, "<<EyeWearGrossProfit>>", Math.Round(db.Source_InputDataBenchMarkSource.Where(x => x.Q26f > 0).Select(x => (x.Q26f - (x.Q52a + x.Q52b + x.Q52c + x.Q52d + x.Q52e)) ?? 0).Average(), 2));
 
 						this.FindAndReplace(wordApp, "<<NoGlareLensPercentSpecLensRx_20TH>>", GetLookUpValue("Lookup.NoGlareLensPercentSpecLensRx", 20, "%"));
 						this.FindAndReplace(wordApp, "<<NoGlareLensPercentSpecLensRx_80TH>>", GetLookUpValue("Lookup.NoGlareLensPercentSpecLensRx", 80, "%"));
 						this.FindAndReplace(wordApp, "<<PrescriptionSunwearPercentofEyeWearRxes_J_75>>", GetLookUpValue("Lookup.PrescriptionSunwearPercentofEyeWearRxes_J", 75));
 						this.FindAndReplace(wordApp, "<<MultipleEyewearPurchasePercent_80TH>>", GetLookUpValue("Lookup.PrescriptionSunwearPercentofEyeWearRxes_J", 80));
 						this.FindAndReplace(wordApp, "<<CLGrossProfitMargin_20TH>>", GetLookUpValue("Lookup.CLGrossProfitMargin", 20));
-						this.FindAndReplace(wordApp, "<<CLGrossProfitMargin_80TH>>>", GetLookUpValue("Lookup.CLGrossProfitMargin", 80));
+						this.FindAndReplace(wordApp, "<<CLGrossProfitMargin_80TH>>", GetLookUpValue("Lookup.CLGrossProfitMargin", 80));
+						//this.FindAndReplace(wordApp, "<<TotalCostOfGoods>>", GetLookUpValue("Lookup.GrossRevenuePerCompleteExam", 50));
+
 						string vsnStr = "";
 						if (singleVsnLensAvg > progVsnLensAvg)
 							vsnStr = "more than";
@@ -7769,59 +7833,59 @@ namespace PracticePerformanceAssessmentDataAccess
 						GenerateBarGraph(imagelocation, wordApp, aDoc, "CLSalesPercentGrossRev", "50", "Contact Lens % of Gross Revenue Performance Deciles");
 
 						//---------------------------------
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "MedicalEyeCareVisitPercentTotal", "13", "Medical Eye Care Visits % of Total Patient Visits");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "AnnMedEyeCareVisitPer1000", "14", "Annual Medical Eye Care Visits per 1,000 Active Patients");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "MedicalEyeCareVisitPercentTotal", "13", "Medical Eye Care Visits % of Total Patient Visits");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "AnnMedEyeCareVisitPer1000", "14", "Annual Medical Eye Care Visits per 1,000 Active Patients");
 						//<<PercentofExamsProvidedwithManagedCareDiscount_Graph>>
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "PercentExamsProvideWMangCareDis", "18", "Percent of Exams Provided with Managed Care Discount");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "PercentOfGrossRevenueDirectPatientPayments_J", "19", "Percent of Gross Revenue from Direct Patient Payments");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "PercentOfGrossRevenueAllHealthVisionPlans_J", "20", "Percent of Gross Revenue from All Health/Vision Plans");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "PercentOfGrossRevenueVSPPayments_J", "21", "Percent of Gross Revenue from VSP Payments (included in total above)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "PercentOfGrossRevenueFromMedicarePayments_J", "22", "Percent of Gross Revenue from Medicare Payments");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "PercentExamsProvideWMangCareDis", "18", "Percent of Exams Provided with Managed Care Discount");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "PercentOfGrossRevenueDirectPatientPayments_J", "19", "Percent of Gross Revenue from Direct Patient Payments");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "PercentOfGrossRevenueAllHealthVisionPlans_J", "20", "Percent of Gross Revenue from All Health/Vision Plans");
+						GenerateLinearGraph2(120, imagelocation, wordApp, aDoc, "PercentOfGrossRevenueVSPPayments_J", "21", "Percent of Gross Revenue from VSP Payments (included in total above)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "PercentOfGrossRevenueFromMedicarePayments_J", "22", "Percent of Gross Revenue from Medicare Payments");
 						//<<AverageCollectedExamRevenueperCompleteExam(direct-payandmanagedcare)_Graph>>
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "AvgCollectFeeRevPerCompl", "23", "Average Collected Exam Revenue per Complete Exam \n (direct-pay and managed care)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ExamFeeNonCL", "24", "Non-Contact Lens Exam (direct-pay)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitSPHERE", "25", "Contact Lens New Fit Exam – Sphere (direct-pay)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitTORIC", "26", "Contact Lens New Fit Exam – Soft Toric (direct-pay)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitMULTIFO", "27", "Contact Lens New Fit Exam – Soft Multifocal (direct-pay)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ExamFeeSoftLensNOREFITT", "28", "Contact Lens Exam – No Refitting (direct-pay)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "OpticalDispensaryPercentOfTotalOfficeSpace_J", "33", "Optical Dispensary % of Total Office Space");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "MultipleEyewearPurchasePercent", "34", "Eyewear Multiple Pair Sales Ratio");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "ProgressiveLensAndPresbyopRx", "36", "Progressive Lenses (% of presbyopic Rxes)");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "NoGlareLensPercentSpecLensRx", "37", "No-Glare (anti-reflective) Lens (% of eyewear Rxes)");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "HighIndexLensPercentSpecLensRx", "38", "High Index Lenses (% of eyewear Rxes)");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "PhotochrLensPercentofSpecLensRx", "39", "Photochromic Lenses (% of eyewear Rxes)");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "PrescriptionSunwearPercentofEyeWearRxes_J", "40", "Prescription Sunwear (% of eyewear Rxes)");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "ComputerLensesPercentofEyeWearRxes_J", "41", "Computer Lenses (% of eyewear Rxes)");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "FramesAvgWholesaleCostPerFrame_J", "48", "Frames Average Wholesale Cost per Pair");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "CLWearerPercentActivePatients", "51", "Percent of Active Patients Wearing Contact Lenses");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "AnnCLSalesPerCLExam", "52", "Annual Contact Lens Sales per Contact Lens Eye Exam");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "SiliconeHydroLensWearPercentSoft", "53", "Silicone Hydrogel Wearer % of Soft Lens Wearers");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "DailyDisposableLensPercentSoft", "54", "Daily Disposable Wearer % of Contact Lens Wearers");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "SoftToricPercentSoftLens", "55", "Soft Toric Lens Wearer % of Contact Lens Wearers");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "SoftMultiFocPercentSoftLens", "56", "Soft Multifocal Lens Wearer % of Contact Lens Wearers");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "RGPLensWearerPercentOfCLWeares_J", "57", "RGP Lens Wearer % of Contact Lens Wearers");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "CLRefitPercentCLExam", "58", "Soft Lens Patient Refit Ratio");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "CLNewFitsPer100CLExam", "59", "Soft Lens New Fits per 100 Contact Lens Exams");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "CLGrossProfitMargin", "60", "Soft Lens Gross Profit Margin %");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "PercentPatientsCLExamPurchEyewea", "65", "Percent of Contact Lens Patients Purchasing Eyeglasses");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "ChairCostPerComplExam", "71", "Chair Cost per Complete Exam");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "AnnualOccupancyCostperSquareFoot_j", "72", "Annual Occupancy Cost per Square Foot");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "NetIncomePercentGrossRev", "73", "Net Income % of Gross Revenue");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "AnnMrktSpendPerComplExam", "75", "Annual Marketing Spending per Complete Exam");
-						GenerateLinearGraph2(imagelocation, wordApp, aDoc, "AcctRecDaysOutstanding", "76", "Accounts Receivables Aging % 60 days or more (By Performance Decile) Accounts Receivables");
-						GenerateLinearGraph(imagelocation, wordApp, aDoc, "AnnTotalEyeExamsPer1000Patient", "78", "Annual total eye exams per 1,000 active Patients");
-						GenerateLinearGraph3(imagelocation, wordApp, aDoc, "ES_Average_Frames_Mark_Up", "47", "Average Frames Mark-Up");
+						GenerateLinearGraph2(120, imagelocation, wordApp, aDoc, "AvgCollectFeeRevPerCompl", "23", "Average Collected Exam Revenue per Complete Exam \n (direct-pay and managed care)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ExamFeeNonCL", "24", "Non-Contact Lens Exam (direct-pay)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitSPHERE", "25", "Contact Lens New Fit Exam – Sphere (direct-pay)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitTORIC", "26", "Contact Lens New Fit Exam – Soft Toric (direct-pay)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ExamFeeSoftNewFitMULTIFO", "27", "Contact Lens New Fit Exam – Soft Multifocal (direct-pay)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ExamFeeSoftLensNOREFITT", "28", "Contact Lens Exam – No Refitting (direct-pay)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "OpticalDispensaryPercentOfTotalOfficeSpace_J", "33", "Optical Dispensary % of Total Office Space");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "MultipleEyewearPurchasePercent", "34", "Eyewear Multiple Pair Sales Ratio");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "ProgressiveLensAndPresbyopRx", "36", "Progressive Lenses (% of presbyopic Rxes)");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "NoGlareLensPercentSpecLensRx", "37", "No-Glare (anti-reflective) Lens (% of eyewear Rxes)");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "HighIndexLensPercentSpecLensRx", "38", "High Index Lenses (% of eyewear Rxes)");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "PhotochrLensPercentofSpecLensRx", "39", "Photochromic Lenses (% of eyewear Rxes)");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "PrescriptionSunwearPercentofEyeWearRxes_J", "40", "Prescription Sunwear (% of eyewear Rxes)");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "ComputerLensesPercentofEyeWearRxes_J", "41", "Computer Lenses (% of eyewear Rxes)");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "FramesAvgWholesaleCostPerFrame_J", "48", "Frames Average Wholesale Cost per Pair");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "CLWearerPercentActivePatients", "51", "Percent of Active Patients Wearing Contact Lenses");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "AnnCLSalesPerCLExam", "52", "Annual Contact Lens Sales per Contact Lens Eye Exam");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "SiliconeHydroLensWearPercentSoft", "53", "Silicone Hydrogel Wearer % of Soft Lens Wearers");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "DailyDisposableLensPercentSoft", "54", "Daily Disposable Wearer % of Contact Lens Wearers");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "SoftToricPercentSoftLens", "55", "Soft Toric Lens Wearer % of Contact Lens Wearers");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "SoftMultiFocPercentSoftLens", "56", "Soft Multifocal Lens Wearer % of Contact Lens Wearers");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "RGPLensWearerPercentOfCLWeares_J", "57", "RGP Lens Wearer % of Contact Lens Wearers");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "CLRefitPercentCLExam", "58", "Soft Lens Patient Refit Ratio");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "CLNewFitsPer100CLExam", "59", "Soft Lens New Fits per 100 Contact Lens Exams");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "CLGrossProfitMargin", "60", "Soft Lens Gross Profit Margin %");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "PercentPatientsCLExamPurchEyewea", "65", "Percent of Contact Lens Patients Purchasing Eyeglasses");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "ChairCostPerComplExam", "71", "Chair Cost per Complete Exam");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "AnnualOccupancyCostperSquareFoot_j", "72", "Annual Occupancy Cost per Square Foot");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "NetIncomePercentGrossRev", "73", "Net Income % of Gross Revenue");
+						GenerateLinearGraph2(100, imagelocation, wordApp, aDoc, "AnnMrktSpendPerComplExam", "75", "Annual Marketing Spending per Complete Exam");
+						GenerateLinearGraph2(120, imagelocation, wordApp, aDoc, "AcctRecDaysOutstanding", "76", "Accounts Receivables Aging % 60 days or more (By Performance Decile) Accounts Receivables");
+						GenerateLinearGraph(100, imagelocation, wordApp, aDoc, "AnnTotalEyeExamsPer1000Patient", "78", "Annual total eye exams per 1,000 active Patients");
+						GenerateLinearGraph3(100, imagelocation, wordApp, aDoc, "ES_Average_Frames_Mark_Up", "47", "Average Frames Mark-Up");
 
 
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "EyewearRxPer100ComplExam", "83", "Eyewear Rxes per 100 Complete Exams Performance Deciles");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "GrossRevPerEyewearRx", "86", "Eyewear Revenue per Rx Performance Deciles");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "ProgressiveLensAndPresbyopRx", "87", "Progressive Lenses (% of presbyopic Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "NoGlareLensPercentSpecLensRx", "88", "No-Glare (anti-reflective) Lens (% of eyewear Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "HighIndexLensPercentSpecLensRx", "89", "High Index Lenses (% of eyewear Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "PhotochrLensPercentofSpecLensRx", "90", "Photochromic Lenses (% of eyewear Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "PrescriptionSunwearPercentofEyeWearRxes_J", "92", "Prescription Sunwear (% of eyewear Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "ComputerLensesPercentofEyeWearRxes_J", "91", "Computer Lenses (% of eyewear Rxes)");
-						GenerateSpectacleLinearGraph(imagelocation, wordApp, aDoc, "MultipleEyewearPurchasePercent", "93", "Eyewear Multiple Pair Sales % Eyewear Buyers Performance Deciles");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "EyewearRxPer100ComplExam", "83", "Eyewear Rxes per 100 Complete Exams Performance Deciles");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "GrossRevPerEyewearRx", "86", "Eyewear Revenue per Rx Performance Deciles");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "ProgressiveLensAndPresbyopRx", "87", "Progressive Lenses (% of presbyopic Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "NoGlareLensPercentSpecLensRx", "88", "No-Glare (anti-reflective) Lens (% of eyewear Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "HighIndexLensPercentSpecLensRx", "89", "High Index Lenses (% of eyewear Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "PhotochrLensPercentofSpecLensRx", "90", "Photochromic Lenses (% of eyewear Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "PrescriptionSunwearPercentofEyeWearRxes_J", "92", "Prescription Sunwear (% of eyewear Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "ComputerLensesPercentofEyeWearRxes_J", "91", "Computer Lenses (% of eyewear Rxes)");
+						GenerateSpectacleLinearGraph(100, imagelocation, wordApp, aDoc, "MultipleEyewearPurchasePercent", "93", "Eyewear Multiple Pair Sales % Eyewear Buyers Performance Deciles");
 
 
 						GenerateLineGraphGrossRevenueperODHourbyPracticeSize(imagelocation, wordApp, aDoc, "GrossRevenuePerODHour", "04", "Gross Revenue per OD Hour by Practice Size");
@@ -7935,7 +7999,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			int maxRectSize = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1].ItemArray[2]);
 			string resize = string.Empty;
 			int bitmapsizeXaxis = 1020 + 550;
-			int bitmapsizeYaxis = 800;
+			int bitmapsizeYaxis = 830;
 
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
@@ -7969,9 +8033,9 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial",40, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 20);
-			objGraphic.FillRectangle(yellowBrush, 0, 390, (bitmapsizeXaxis - 50), 50);
+			objGraphic.FillRectangle(yellowBrush, 0, 450, (bitmapsizeXaxis - 50), 50);
 
-			objGraphic.DrawString("Lowest", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 100));
+			objGraphic.DrawString("Lowest", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 70));
 
 			//if (title == "GrossRevenuePerCompleteExam")
 			//{
@@ -8014,11 +8078,11 @@ namespace PracticePerformanceAssessmentDataAccess
 			//	this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_TD>>", Convert.ToDouble(dt.Rows[0].ItemArray[2].ToString()));
 			//	this.FindAndReplace(wordApp, "<<GrossRevPerEyewearRx_MD%>>", Convert.ToDouble(dt.Rows[5].ItemArray[2].ToString()));
 			//}
-			if (title == "EyewearGrossProfitMargin")
-			{
-				this.FindAndReplace(wordApp, "<<TotalCostOfGoods>>", Convert.ToDouble(dt.Rows[5].ItemArray[2].ToString()));
-				//this.FindAndReplace(wordApp, "<<EyewearGrossProfitMargin_MD%>>", Convert.ToDouble(dt.Rows[0].ItemArray[2].ToString()));
-			}
+			//if (title == "EyewearGrossProfitMargin")
+			//{
+			//	this.FindAndReplace(wordApp, "<<TotalCostOfGoods>>", Convert.ToDouble(dt.Rows[5].ItemArray[2].ToString()));
+			//	//this.FindAndReplace(wordApp, "<<EyewearGrossProfitMargin_MD%>>", Convert.ToDouble(dt.Rows[0].ItemArray[2].ToString()));
+			//}
 
 
 
@@ -8062,44 +8126,45 @@ namespace PracticePerformanceAssessmentDataAccess
 						sngHeight1New = Convert.ToInt32((Convert.ToSingle(row["LookupValue"]) / (Convert.ToSingle(dt.Rows[dt.Rows.Count - 1].ItemArray[2])) * 800));
 				}
 
-				if (row["Heading"].ToString() == "44th-53th percentile")
+				if (row["Heading"].ToString() == "45th-54th percentile")
 				{
-					objGraphic.DrawString("Median", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 100) - gapValue);
+					objGraphic.DrawString("Median", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 70) - gapValue);
 				}
 
 				else
 					if (row["Heading"].ToString() != "0th-9th percentile")
-					objGraphic.DrawString(row["Heading"].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 30, (bitmapsizeYaxis - 100) - gapValue);
+					objGraphic.DrawString(row["Heading"].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 30, (bitmapsizeYaxis - 70) - gapValue);
 
 				if (row["Heading"].ToString() == "0th-9th percentile")
 				{
-					objGraphic.DrawString("1st-9th percentile", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 30, (bitmapsizeYaxis - 100) - gapValue);
+					objGraphic.DrawString("1st-9th percentile", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 30, (bitmapsizeYaxis - 70) - gapValue);
 				}
 
-				objGraphic.FillRectangle(lightblueBrush, 320, ((bitmapsizeYaxis - 100) - gapValue), sngHeight1New, 30);
-				objGraphic.DrawString(sngHighestValueNewString, new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, sngHeight1New + 10 + 200 + 120, (bitmapsizeYaxis - 100) - gapValue);
+				objGraphic.FillRectangle(lightblueBrush, 320, ((bitmapsizeYaxis - 70) - gapValue), sngHeight1New, 30);
+				objGraphic.DrawString(sngHighestValueNewString, new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, sngHeight1New + 10 + 200 + 120, (bitmapsizeYaxis - 70) - gapValue);
 
 				if (lookUpTable != "EyewearSalePercentageOfGrossRev")
-					objGraphic.DrawString(Convert.ToInt32(((Convert.ToDouble(row.ItemArray[2].ToString()) / Convert.ToDouble(dt.Rows[5].ItemArray[2])) * Convert.ToDouble(100))).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, bitmapsizeXaxis - 150 + 20, (bitmapsizeYaxis - 100) - gapValue);
+					objGraphic.DrawString(Convert.ToInt32(((Convert.ToDouble(row.ItemArray[2].ToString()) / Convert.ToDouble(dt.Rows[5].ItemArray[2])) * Convert.ToDouble(100))).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, bitmapsizeXaxis - 150 + 20, (bitmapsizeYaxis - 70) - gapValue);
 
 				gapValue = gapValue + 50;
 			}
 
-			objGraphic.DrawString("Highest", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 100) - gapValue);
+			objGraphic.DrawString("Highest", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, 20, (bitmapsizeYaxis - 70) - gapValue);
 			if (lookUpTable != "EyewearSalePercentageOfGrossRev")
-				objGraphic.DrawString("Index VS. Median", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, bitmapsizeXaxis - 250, (bitmapsizeYaxis - 100) - gapValue);
+				objGraphic.DrawString("Index vs. Median", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel), blackBrush, bitmapsizeXaxis - 250, (bitmapsizeYaxis - 70) - gapValue);
 
-			objGraphic.DrawLine(blackPen, 320, (bitmapsizeYaxis - 100), (bitmapsizeXaxis - 50), (bitmapsizeYaxis - 100));
-			objGraphic.DrawLine(blackPen, 320, 100, 320, (bitmapsizeYaxis - 100));
+			objGraphic.DrawLine(blackPen, 320, (bitmapsizeYaxis - 70), (bitmapsizeXaxis - 50), (bitmapsizeYaxis - 70));
+			objGraphic.DrawLine(blackPen, 320, 130, 320, (bitmapsizeYaxis - 70));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
+
 
 			string filepath = imagelocation + @"\bargraph" + bookMarkNum + ".png";
 			barBitmap.Save(filepath, ImageFormat.Png);
@@ -8115,8 +8180,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 		}
 
-
-		public void GenerateLinearGraph(string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
+		public void GenerateLinearGraph(int headerHeight, string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
 		{
 			System.Data.DataTable dt = new System.Data.DataTable();
 			DataSet ds = new DataSet();
@@ -8152,16 +8216,17 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen grayPen = new Pen(Color.Gray, 2);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, headerHeight));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 			int gapValue = 0;
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 120, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = headerHeight, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 20);
 
@@ -8175,13 +8240,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				if (columns.Contains("LookupValue$"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue$"]);
-					sngHighestValueNewString = "$" + sngHighestValueNew.ToString();
+					sngHighestValueNewString = "$" + Math.Round(sngHighestValueNew, 1).ToString();
 					type = "$";
 				}
 				if (columns.Contains("LookupValue"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue"]);
-					sngHighestValueNewString = sngHighestValueNew.ToString();
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString();
 					type = string.Empty;
 				}
 
@@ -8192,7 +8257,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					{
 						sngHighestValueNew = 100;
 					}
-					sngHighestValueNewString = sngHighestValueNew.ToString() + "%";
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString() + "%";
 					type = "%";
 				}
 
@@ -8272,36 +8337,38 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawString(RowId.ToString() + "th", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 70 + gapValue + 20, 300);
 
-				if (RowId == 50)
-				{
-					objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 330);
-					objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 350);
+				//if (RowId == 50)
+				//{
+				//	objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//	blackBrush, 570, 330);
+				//	objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//blackBrush, 570, 350);
 
-				}
+				//}
 				gapValue = gapValue + 100;
 				i++;
 				average = average + Convert.ToInt32(sngHighestValueNew);
 			}
+			objGraphic.DrawString("Percentile Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+			blackBrush, 530, 345);
 			average = average / 11;
 			if (type == "$")
 				objGraphic.DrawString("AVERAGE=" + type + average.ToString(), new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 375);
+					blackBrush, 530, 370);
 			else if (type == "%")
 				objGraphic.DrawString("AVERAGE=" + average.ToString() + type, new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 375);
+				blackBrush, 530, 370);
 			else
 				objGraphic.DrawString("AVERAGE=" + average.ToString(), new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 375);
+				blackBrush, 530, 370);
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\lineargraph" + bookMarkNum + ".png";
@@ -8316,7 +8383,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			barBitmap.Dispose();
 		}
 
-		public void GenerateLinearGraph2(string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
+		public void GenerateLinearGraph2(int headerHeight, string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
 		{
 			System.Data.DataTable dt = new System.Data.DataTable();
 			DataSet ds = new DataSet();
@@ -8352,16 +8419,17 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen grayPen = new Pen(Color.Gray, 2);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, headerHeight));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 			int gapValue = 0;
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 120, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = headerHeight, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 20);
 
@@ -8375,13 +8443,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				if (columns.Contains("LookupValue$"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue$"]);
-					sngHighestValueNewString = "$" + sngHighestValueNew.ToString();
+					sngHighestValueNewString = "$" + Math.Round(sngHighestValueNew, 1).ToString();
 					type = "$";
 				}
 				if (columns.Contains("LookupValue"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue"]);
-					sngHighestValueNewString = sngHighestValueNew.ToString();
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString();
 					type = string.Empty;
 				}
 
@@ -8392,7 +8460,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					{
 						sngHighestValueNew = 100;
 					}
-					sngHighestValueNewString = sngHighestValueNew.ToString() + "%";
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString() + "%";
 					type = "%";
 				}
 
@@ -8468,37 +8536,40 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawString(RowId.ToString() + "th", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 70 + gapValue + 20, 300);
 
-				if (RowId == 50)
-				{
-					objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 330);
-					objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 350);
+				//if (RowId == 50)
+				//{
+				//	objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//	blackBrush, 570, 330);
+				//	objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//blackBrush, 570, 350);
 
-				}
+				//}
 				gapValue = gapValue + 100;
 				i++;
 				average = average + Convert.ToInt32(sngHighestValueNew);
 			}
+
+			objGraphic.DrawString("Percentile Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+			blackBrush, 530, 345);
 			average = average / 11;
 
 			if (type == "$")
 				objGraphic.DrawString(type + "AVERAGE=" + average.ToString(), new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 370);
+					blackBrush, 530, 370);
 			else if (type == "%")
 				objGraphic.DrawString("AVERAGE=" + average.ToString() + type, new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 370);
+				blackBrush, 530, 370);
 			else
 				objGraphic.DrawString("AVERAGE=" + average.ToString(), new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 370);
+				blackBrush, 530, 370);
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\lineargraph" + bookMarkNum + ".png";
@@ -8516,7 +8587,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 		}
 
-		public void GenerateLinearGraph3(string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string eSTable, string bookMarkNum, string title)
+		public void GenerateLinearGraph3(int headerHeight, string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string eSTable, string bookMarkNum, string title)
 		{
 			System.Data.DataTable dt = new System.Data.DataTable();
 			DataSet ds = new DataSet();
@@ -8553,16 +8624,17 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen grayPen = new Pen(Color.Gray, 2);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, headerHeight));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 			int gapValue = 0;
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 120, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = headerHeight, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 20);
 
@@ -8645,26 +8717,28 @@ namespace PracticePerformanceAssessmentDataAccess
 					objGraphic.DrawString(RowId.ToString() + "th", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, 70 + gapValue + 20, 300);
 
-					if (RowId == 50)
-					{
-						objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-						blackBrush, 570, 330);
-						objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 350);
+					//if (RowId == 50)
+					//{
+					//	objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+					//	blackBrush, 570, 330);
+					//	objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+					//blackBrush, 570, 350);
 
-					}
+					//}
 					gapValue = gapValue + 100;
 					i++;
 				}
 			}
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawString("Percentile Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+			blackBrush, 530, 345);
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\lineargraph" + bookMarkNum + ".png";
@@ -8682,7 +8756,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 		}
 
-		public void GenerateSpectacleLinearGraph(string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
+		public void GenerateSpectacleLinearGraph(int headerHeight, string imagelocation, Microsoft.Office.Interop.Word.Application wordApp, Microsoft.Office.Interop.Word.Document aDoc, string lookUpTable, string bookMarkNum, string title)
 		{
 			System.Data.DataTable dt = new System.Data.DataTable();
 			DataSet ds = new DataSet();
@@ -8718,16 +8792,17 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen grayPen = new Pen(Color.Gray, 2);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, headerHeight));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 			int gapValue = 0;
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 120, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = headerHeight, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 20);
 
@@ -8741,13 +8816,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				if (columns.Contains("LookupValue$"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue$"]);
-					sngHighestValueNewString = "$" + sngHighestValueNew.ToString();
+					sngHighestValueNewString = "$" + Math.Round(sngHighestValueNew, 1).ToString();
 					type = "$";
 				}
 				if (columns.Contains("LookupValue"))
 				{
 					sngHighestValueNew = Convert.ToSingle(row["LookupValue"]);
-					sngHighestValueNewString = sngHighestValueNew.ToString();
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString();
 					type = string.Empty;
 				}
 
@@ -8758,7 +8833,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					{
 						sngHighestValueNew = 100;
 					}
-					sngHighestValueNewString = sngHighestValueNew.ToString() + "%";
+					sngHighestValueNewString = Math.Round(sngHighestValueNew, 1).ToString() + "%";
 					type = "%";
 				}
 
@@ -8838,25 +8913,27 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawString(RowId.ToString() + "th", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 70 + gapValue + 20, 300);
 
-				if (RowId == 50)
-				{
-					objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 570, 330);
-					objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
-				blackBrush, 570, 350);
+				//if (RowId == 50)
+				//{
+				//	objGraphic.DrawString("Percentile", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//	blackBrush, 570, 330);
+				//	objGraphic.DrawString("Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				//blackBrush, 570, 350);
 
-				}
+				//}
 				gapValue = gapValue + 100;
 				i++;
 			}
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawString("Percentile Ranking", new System.Drawing.Font("Arial", 22, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 530, 345);
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\Spectaclelineargraph" + bookMarkNum + ".png";
@@ -8889,9 +8966,9 @@ namespace PracticePerformanceAssessmentDataAccess
 			cmd.Connection = con;
 
 			string tableName = "[dbo].[Lookup." + lookUpTable + "]";
-			String strQuery = "select CONVERT(varchar(10), RowId-6)+'th' +CONVERT(varchar(1), '-')+" +
-				" CONVERT(varchar(10), RowId + 3) + 'th' + ' percentile' as Heading, * from " + tableName +
-	"where RowId like ('%6') ";
+			String strQuery = "select CONVERT(varchar(10), RowId-5)+'th' +CONVERT(varchar(1), '-')+" +
+				" CONVERT(varchar(10), RowId + 4) + 'th' + ' percentile' as Heading, * from " + tableName +
+	"where RowId like ('%5') ";
 
 			cmd.CommandText = strQuery;
 			cmd.CommandType = CommandType.Text;
@@ -8906,9 +8983,6 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
-
-			Bitmap barBitmap1 = new Bitmap(1400, 100);
-			Graphics objGraphic1 = Graphics.FromImage(barBitmap1);
 
 			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
@@ -9035,7 +9109,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				j++;
 				x = x + 100;
 			}
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 550, (bitmapsizeYaxis - 200) + 100);
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
@@ -9043,13 +9117,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + bookMarkNum + ".png";
@@ -9090,7 +9164,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -9103,16 +9177,19 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 140));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 140, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 140, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
+			objGraphic.DrawString("Percent Dispensed From Inventory", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
 			int i = 1;
@@ -9159,7 +9236,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 					objGraphic.DrawString(row[i - 1].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, x - 10, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew) + 10);
-					objGraphic.DrawString(column.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+					objGraphic.DrawString((column.ToString()).Replace('_', ' '), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (200 * i) + 150, ((bitmapsizeYaxis - 200) + 30));
 					i++;
 					x = x + 200;
@@ -9174,13 +9251,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + bookMarkNum + ".png";
@@ -9206,11 +9283,11 @@ namespace PracticePerformanceAssessmentDataAccess
 			//float four = 400; // (Convert.ToSingle(objReport.lstInput[0].colQ92f == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ92f)).ToString("#,0"))) / (Convert.ToSingle(objReport.lstInput[0].colQ52j == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ52j)).ToString("#,0")));
 			//float five = 500;// (Convert.ToSingle(objReport.lstInput[0].colQ92g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ92g)).ToString("#,0"))) / (Convert.ToSingle(objReport.lstInput[0].colQ52j == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ52j)).ToString("#,0")));
 
-			decimal one = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 500000).Select(c => c.Q46a ?? 0).Average();
-			decimal two = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 500000 && c.Q24 <= 750000).Select(c => c.Q46a ?? 0).Average();
-			decimal three = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 750000 && c.Q24 <= 1000000).Select(c => c.Q46a ?? 0).Average();
-			decimal four = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1000000 && c.Q24 <= 1250000).Select(c => c.Q46a ?? 0).Average();
-			decimal five = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1250000 && c.Q24 <= 1500000).Select(c => c.Q46a ?? 0).Average();
+			decimal one = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 500000).Select(c => c.Q46a ?? 0).Average(), 2);
+			decimal two = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 500000 && c.Q24 <= 750000).Select(c => c.Q46a ?? 0).Average(), 2);
+			decimal three = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 750000 && c.Q24 <= 1000000).Select(c => c.Q46a ?? 0).Average(), 2);
+			decimal four = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1000000 && c.Q24 <= 1250000).Select(c => c.Q46a ?? 0).Average(), 2);
+			decimal five = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1250000 && c.Q24 <= 1500000).Select(c => c.Q46a ?? 0).Average(), 2);
 
 			List<decimal> graphData = new List<decimal>() { one, two, three, four, five };
 
@@ -9251,7 +9328,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -9264,18 +9341,23 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
 			Brush cadetBlueBrush = new SolidBrush(Color.FromArgb(255, 0, 184, 237));
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
+
+
+			objGraphic.DrawString("Nubmber of Boxes", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
 			int i = 1;
@@ -9326,13 +9408,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 							new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 
@@ -9360,11 +9442,11 @@ namespace PracticePerformanceAssessmentDataAccess
 			//float five = 175;// (Convert.ToSingle(objReport.lstInput[0].colQ92g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ92g)).ToString("#,0"))) / (Convert.ToSingle(objReport.lstInput[0].colQ52j == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ52j)).ToString("#,0")));
 
 
-			decimal one = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 509000).Select(c => c.Q38 ?? 0).Average();
-			decimal two = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 509000 && c.Q24 <= 796000).Select(c => c.Q38 ?? 0).Average();
-			decimal three = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 796000 && c.Q24 <= 1100000).Select(c => c.Q38 ?? 0).Average();
-			decimal four = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1100000 && c.Q24 <= 1500000).Select(c => c.Q38 ?? 0).Average();
-			decimal five = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1500000 && c.Q24 <= 2200000).Select(c => c.Q38 ?? 0).Average();
+			decimal one = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 509000).Select(c => c.Q38 ?? 0).Average(), 2);
+			decimal two = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 509000 && c.Q24 <= 796000).Select(c => c.Q38 ?? 0).Average(), 2);
+			decimal three = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 796000 && c.Q24 <= 1100000).Select(c => c.Q38 ?? 0).Average(), 2);
+			decimal four = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1100000 && c.Q24 <= 1500000).Select(c => c.Q38 ?? 0).Average(), 2);
+			decimal five = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1500000 && c.Q24 <= 2200000).Select(c => c.Q38 ?? 0).Average(), 2);
 
 			List<decimal> graphData = new List<decimal>() { one, two, three, four, five };
 
@@ -9410,7 +9492,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -9423,16 +9505,19 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
+			objGraphic.DrawString("Numbers in inventory", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+					blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, 30, 28);
 
 			int i = 1;
@@ -9489,13 +9574,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 
@@ -9523,11 +9608,11 @@ namespace PracticePerformanceAssessmentDataAccess
 			//float four = 2.64f; // (Convert.ToSingle(objReport.lstInput[0].colQ92f == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ92f)).ToString("#,0"))) / (Convert.ToSingle(objReport.lstInput[0].colQ52j == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ52j)).ToString("#,0")));
 			//float five = 2.59f;// (Convert.ToSingle(objReport.lstInput[0].colQ92g == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ92g)).ToString("#,0"))) / (Convert.ToSingle(objReport.lstInput[0].colQ52j == null ? null : Math.Round(Convert.ToDecimal(objReport.lstInput[0].colQ52j)).ToString("#,0")));
 
-			decimal one = db.Source_InputDataBenchMarkSource.Where(c => c.Q36 > 0 && c.Q36 <= 99).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average();
-			decimal two = db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 100 && c.Q36 <= 199).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average();
-			decimal three = db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 200 && c.Q36 <= 299).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average();
-			decimal four = db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 300 && c.Q36 <= 399).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average();
-			decimal five = db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 400 && c.Q36 <= 100000).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average();
+			decimal one = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q36 > 0 && c.Q36 <= 99).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average(), 2);
+			decimal two = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 100 && c.Q36 <= 199).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average(), 2);
+			decimal three = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 200 && c.Q36 <= 299).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average(), 2);
+			decimal four = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 300 && c.Q36 <= 399).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average(), 2);
+			decimal five = Math.Round(db.Source_InputDataBenchMarkSource.Where(c => c.Q36 >= 400 && c.Q36 <= 100000).Select(c => (((c.Q34 + c.Q35) * c.Q36) / c.Q52a) ?? 0).Average(), 2);
 
 
 			List<decimal> graphData = new List<decimal>() { one, two, three, four, five };
@@ -9571,7 +9656,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -9584,16 +9669,18 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
-
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
+			objGraphic.DrawString("Mark-up", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, 30, 28);
 			int i = 1;
 			int x = 400;
@@ -9642,13 +9729,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 								new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 
@@ -9684,116 +9771,117 @@ namespace PracticePerformanceAssessmentDataAccess
 			dtValue.Clear();
 			dtValue.Columns.Add("value");
 
-			DataRow drValue1 = dtValue.NewRow();
-			drValue1["value"] = "1700";
-			DataRow drValue2 = dtValue.NewRow();
-			drValue2["value"] = "2000";
-			DataRow drValue3 = dtValue.NewRow();
-			drValue3["value"] = "2150";
-			DataRow drValue4 = dtValue.NewRow();
-			drValue4["value"] = "2500";
-			DataRow drValue5 = dtValue.NewRow();
-			drValue5["value"] = "3000";
-			DataRow drValue6 = dtValue.NewRow();
-			drValue6["value"] = "3000";
-			DataRow drValue7 = dtValue.NewRow();
-			drValue7["value"] = "3375";
-			DataRow drValue8 = dtValue.NewRow();
-			drValue8["value"] = "3300";
-			DataRow drValue9 = dtValue.NewRow();
-			drValue9["value"] = "4400";
-			DataRow drValue10 = dtValue.NewRow();
-			drValue10["value"] = "5000";
-			//decimal? value = 0;
 			//DataRow drValue1 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) <= 356 && (c.Q24 == null ? 0 : c.Q24) > 0).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue1["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue1["value"] = "1700";
 			//DataRow drValue2 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 356 && (c.Q24 == null ? 0 : c.Q24) <= 581).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue2["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue2["value"] = "2000";
 			//DataRow drValue3 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 581 && (c.Q24 == null ? 0 : c.Q24) <= 698).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue3["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue3["value"] = "2150";
 			//DataRow drValue4 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 698 && (c.Q24 == null ? 0 : c.Q24) <= 823).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue4["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue4["value"] = "2500";
 			//DataRow drValue5 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 823 && (c.Q24 == null ? 0 : c.Q24) <= 947).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue5["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue5["value"] = "3000";
 			//DataRow drValue6 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 947 && (c.Q24 == null ? 0 : c.Q24) <= 1106).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue6["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue6["value"] = "3000";
 			//DataRow drValue7 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1106 && (c.Q24 == null ? 0 : c.Q24) <= 1300).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue7["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue7["value"] = "3375";
 			//DataRow drValue8 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1300 && (c.Q24 == null ? 0 : c.Q24) <= 1532).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue8["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue8["value"] = "3300";
 			//DataRow drValue9 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1532 && (c.Q24 == null ? 0 : c.Q24) <= 1852).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)))
-			//{
-			//	drValue9["value"] = 0;
-			//}
-			//else
-			//	drValue1["value"] = value;
-
+			//drValue9["value"] = "4400";
 			//DataRow drValue10 = dtValue.NewRow();
-			//value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1852 && (c.Q24 == null ? 0 : c.Q24) <= 2950).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
-			//if (string.IsNullOrEmpty(Convert.ToString(value)) || value == 0)
-			//{
-			//	drValue10["value"] = value;
-			//}
-			//else
-			//	drValue1["value"] = value;
+			//drValue10["value"] = "5000";
+
+			decimal? value = 0;
+			DataRow drValue1 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) <= 356 && (c.Q24 == null ? 0 : c.Q24) > 0).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue1["value"] = 0;
+			}
+			else
+				drValue1["value"] = value;
+
+			DataRow drValue2 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 356 && (c.Q24 == null ? 0 : c.Q24) <= 581).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue2["value"] = 0;
+			}
+			else
+				drValue2["value"] = value;
+
+			DataRow drValue3 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 581 && (c.Q24 == null ? 0 : c.Q24) <= 698).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue3["value"] = 0;
+			}
+			else
+				drValue3["value"] = value;
+
+			DataRow drValue4 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 698 && (c.Q24 == null ? 0 : c.Q24) <= 823).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue4["value"] = 0;
+			}
+			else
+				drValue4["value"] = value;
+
+			DataRow drValue5 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 823 && (c.Q24 == null ? 0 : c.Q24) <= 947).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue5["value"] = 0;
+			}
+			else
+				drValue5["value"] = value;
+
+			DataRow drValue6 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 947 && (c.Q24 == null ? 0 : c.Q24) <= 1106).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue6["value"] = 0;
+			}
+			else
+				drValue6["value"] = value;
+
+			DataRow drValue7 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1106 && (c.Q24 == null ? 0 : c.Q24) <= 1300).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue7["value"] = 0;
+			}
+			else
+				drValue7["value"] = value;
+
+			DataRow drValue8 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1300 && (c.Q24 == null ? 0 : c.Q24) <= 1532).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue8["value"] = 0;
+			}
+			else
+				drValue8["value"] = value;
+
+			DataRow drValue9 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1532 && (c.Q24 == null ? 0 : c.Q24) <= 1852).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)))
+			{
+				drValue9["value"] = 0;
+			}
+			else
+				drValue9["value"] = value;
+
+			DataRow drValue10 = dtValue.NewRow();
+			value = db.Source_InputDataBenchMarkSource.Where(c => (c.Q24 == null ? 0 : c.Q24) > 1852 && (c.Q24 == null ? 0 : c.Q24) <= 2950).Select(c => (c.Q2 == null ? 0 : c.Q2)).Average();
+			if (string.IsNullOrEmpty(Convert.ToString(value)) || value == 0)
+			{
+				drValue10["value"] = value;
+			}
+			else
+				drValue10["value"] = value;
 
 			dtValue.Rows.Add(drValue1);
 			dtValue.Rows.Add(drValue2);
@@ -9832,7 +9920,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -9845,15 +9933,22 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
+
+			objGraphic.DrawString("Office Square Feet", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
+
+			objGraphic.DrawString("0", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+					blackBrush, 100, bitmapsizeYaxis - 220);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arail", 28, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -9868,13 +9963,14 @@ namespace PracticePerformanceAssessmentDataAccess
 				if (dtValue.Rows[i - 1][0].ToString() != "0")
 					sngHighestValueNew = Convert.ToSingle(Convert.ToDecimal(dtValue.Rows[i - 1][0].ToString())) / length * 100;
 				else
-					sngHighestValueNew = 0;
+					sngHighestValueNew = 1;
+
 				if (i < dtValue.Rows.Count)
 				{
 					if (dtValue.Rows[i][0].ToString() != "0")
 						nextPoint = Convert.ToSingle(Convert.ToDecimal(dtValue.Rows[i][0].ToString())) / length * 100;
 					else
-						nextPoint = 0;
+						nextPoint = 1;
 				}
 
 				if (sngHighestValueNew == 0)
@@ -9882,24 +9978,28 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				sngHeight1New = sngHighestValueNew;
 
-				if ((rect - 100 <= 800) && nextPoint != 0)
+				if ((rect - 100 < 800) && nextPoint != 0)
 				{
+					if (length == 1)
+					{
+						length = length + 1;
+					}
 					Xaxis = Xaxis + length;
 					objGraphic.DrawLine(blackPen, 200, rect + 200, (bitmapsizeXaxis - 100), rect + 200);
 					objGraphic.DrawString((Xaxis).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 100, bitmapsizeYaxis - 120 - rect);
+					blackBrush, 100, bitmapsizeYaxis - 220 - rect);
 					rect = rect + 100;
 				}
 				if (nextPoint != 0)
-					objGraphic.DrawLine(redPen, x - 50, (bitmapsizeYaxis - 100) - Convert.ToInt32(sngHighestValueNew), x + 50, (bitmapsizeYaxis - 100) - nextPoint);
+					objGraphic.DrawLine(redPen, x - 50, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew), x + 50, (bitmapsizeYaxis - 200) - nextPoint);
 
-				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 100) - Convert.ToInt32(sngHighestValueNew) - 3, 6, 6);
-				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 100) - Convert.ToInt32(sngHighestValueNew) - 3, 3, 3);
-				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 100) - Convert.ToInt32(sngHighestValueNew) - 3, 1, 1);
+				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew) - 3, 6, 6);
+				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew) - 3, 3, 3);
+				objGraphic.DrawEllipse(redPen, x - 53, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew) - 3, 1, 1);
 
 				objGraphic.DrawLine(blackPen, i * (100) + 200, (bitmapsizeYaxis - 200) - 15, i * (100) + 200, (bitmapsizeYaxis - 200) + 15);
-				objGraphic.DrawString(dtValue.Rows[i - 1][0].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, x - 30, (bitmapsizeYaxis - 100) - Convert.ToInt32(sngHighestValueNew) + 10);
+				objGraphic.DrawString(Math.Round(Convert.ToDouble(dtValue.Rows[i - 1][0]), 2).ToString(), new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
+					blackBrush, x - 60, (bitmapsizeYaxis - 200) - Convert.ToInt32(sngHighestValueNew) + 10);
 				i++;
 				x = x + 100;
 			}
@@ -9923,28 +10023,28 @@ namespace PracticePerformanceAssessmentDataAccess
 						sngHighestValueNew = 1;
 					sngHeight1New = sngHighestValueNew;
 
-					objGraphic.DrawString(column.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-						blackBrush, (100 * i) + 110, (bitmapsizeYaxis - 200) + 30);
+					objGraphic.DrawString(column.ToString(), new System.Drawing.Font("Arial", 23, FontStyle.Bold, GraphicsUnit.Pixel),
+						blackBrush, (100 * i) + 110, (bitmapsizeYaxis - 200) + 45);
 					i++;
 					x = x + 100;
 				}
 
 			}
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-					blackBrush, 550, (bitmapsizeYaxis - 200) + 70);
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+					blackBrush, 550, (bitmapsizeYaxis - 200) + 100);
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			objGraphic.DrawLine(new Pen(Brushes.White, 2), 200, 1100, 1300, 1100);
@@ -9987,7 +10087,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -10001,16 +10101,19 @@ namespace PracticePerformanceAssessmentDataAccess
 
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
+			objGraphic.DrawString("Refraction Rooms", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
 			int i = 1;
@@ -10057,7 +10160,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				}
 
 			}
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 25, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, 550, (bitmapsizeYaxis - 100) + 10);
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
@@ -10065,13 +10168,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 							new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 
@@ -10178,7 +10281,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -10191,15 +10294,16 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -10242,7 +10346,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawEllipse(redPen, (300 + sngHighestValueNew) - 3, (bitmapsizeYaxis - 200) - rect - 3, 1, 1);
 				//objGraphic.DrawLine(blackPen, i * (100) + 200, (bitmapsizeYaxis - 200) - 15, i * (100) + 200, (bitmapsizeYaxis - 200) + 15);
 
-				objGraphic.DrawString(dtValue.Rows[i - 1][2].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				objGraphic.DrawString(Math.Round(Convert.ToDouble(dtValue.Rows[i - 1][2]), 2).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (300 + sngHighestValueNew) + 10, (bitmapsizeYaxis - 200) - rect + 10);
 
 				//objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
@@ -10258,14 +10362,14 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			int width = 0;
 
-			if (graphData.Max().ToString().Length > 4)
+			if (graphData.Max().ToString().Split('.')[0].Length > 4)
 			{
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 2));
 			}
 			else
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 1));
 
-			for (int z = 0; z <= width; z++)
+			for (int z = 0; z <= 10; z++)
 			{
 				objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (100 * i) + 250, ((bitmapsizeYaxis - 200) + 30));
@@ -10277,20 +10381,20 @@ namespace PracticePerformanceAssessmentDataAccess
 			//objGraphic.DrawString("Total MBA Practices", new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
 			//			blackBrush, 550, (bitmapsizeYaxis - 200) + 100);
 			objGraphic.DrawString("Median Sq. Ft.", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-						blackBrush, 600, (bitmapsizeYaxis - 200) + 150);
+						blackBrush, 750, (bitmapsizeYaxis - 200) + 100);
 
 			objGraphic.DrawLine(blackPen, 300, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 300, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 300, 200, 300, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 									new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 
@@ -10398,7 +10502,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -10411,15 +10515,16 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -10462,7 +10567,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawEllipse(redPen, (300 + sngHighestValueNew) - 3, (bitmapsizeYaxis - 200) - rect - 3, 1, 1);
 				//objGraphic.DrawLine(blackPen, i * (100) + 200, (bitmapsizeYaxis - 200) - 15, i * (100) + 200, (bitmapsizeYaxis - 200) + 15);
 
-				objGraphic.DrawString(dtValue.Rows[i - 1][2].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				objGraphic.DrawString(Math.Round(Convert.ToDouble(dtValue.Rows[i - 1][2]), 2).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (300 + sngHighestValueNew) + 10, (bitmapsizeYaxis - 200) - rect + 10);
 
 				//objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
@@ -10478,14 +10583,14 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			int width = 0;
 
-			if (graphData.Max().ToString().Length > 4)
+			if (graphData.Max().ToString().Split('.')[0].Length > 4)
 			{
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 2));
 			}
 			else
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 1));
 
-			for (int z = 0; z <= width; z++)
+			for (int z = 0; z <= 10; z++)
 			{
 				objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (100 * i) + 250, ((bitmapsizeYaxis - 200) + 30));
@@ -10497,20 +10602,20 @@ namespace PracticePerformanceAssessmentDataAccess
 			//objGraphic.DrawString("Total MBA Practices", new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
 			//			blackBrush, 550, (bitmapsizeYaxis - 200) + 100);
 			objGraphic.DrawString("Median Sq. Ft.", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-						blackBrush, 600, (bitmapsizeYaxis - 200) + 150);
+						blackBrush, 750, (bitmapsizeYaxis - 200) + 100);
 
 			objGraphic.DrawLine(blackPen, 300, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 300, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 300, 200, 300, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 									new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + Graph2 + bookMarkNum + ".png";
@@ -10616,7 +10721,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -10629,6 +10734,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
@@ -10637,7 +10743,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -10680,7 +10786,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				objGraphic.DrawEllipse(redPen, (300 + sngHighestValueNew) - 3, (bitmapsizeYaxis - 200) - rect - 3, 1, 1);
 				//objGraphic.DrawLine(blackPen, i * (100) + 200, (bitmapsizeYaxis - 200) - 15, i * (100) + 200, (bitmapsizeYaxis - 200) + 15);
 
-				objGraphic.DrawString(dtValue.Rows[i - 1][2].ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				objGraphic.DrawString(Math.Round(Convert.ToDouble(dtValue.Rows[i - 1][2]), 2).ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (300 + sngHighestValueNew) + 10, (bitmapsizeYaxis - 200) - rect + 10);
 
 				//objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
@@ -10696,14 +10802,14 @@ namespace PracticePerformanceAssessmentDataAccess
 
 			int width = 0;
 
-			if (graphData.Max().ToString().Length > 4)
+			if (graphData.Max().ToString().Split('.')[0].Length > 4)
 			{
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 2));
 			}
 			else
 				width = Convert.ToInt32(graphData.Max().ToString().Substring(0, 1));
 
-			for (int z = 0; z <= width; z++)
+			for (int z = 0; z <= 10; z++)
 			{
 				objGraphic.DrawString(yaxisvalue.ToString(), new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, (100 * i) + 250, ((bitmapsizeYaxis - 200) + 30));
@@ -10715,20 +10821,20 @@ namespace PracticePerformanceAssessmentDataAccess
 			//objGraphic.DrawString("Total MBA Practices", new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel),
 			//			blackBrush, 550, (bitmapsizeYaxis - 200) + 100);
 			objGraphic.DrawString("Median Sq. Ft.", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
-						blackBrush, 600, (bitmapsizeYaxis - 200) + 150);
+						blackBrush, 750, (bitmapsizeYaxis - 200) + 100);
 
 			objGraphic.DrawLine(blackPen, 300, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 300, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 300, 200, 300, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 									new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + Graph3 + bookMarkNum + ".png";
@@ -10774,6 +10880,28 @@ namespace PracticePerformanceAssessmentDataAccess
 			drValue10["value"] = "3.3";
 
 
+			//DataRow drValue1 = dtValue.NewRow();
+			//drValue1["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 493).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue2 = dtValue.NewRow();
+			//drValue2["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 493 && c.Q24 <= 642).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue3 = dtValue.NewRow();
+			//drValue3["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 642 && c.Q24 <= 767).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue4 = dtValue.NewRow();
+			//drValue4["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 767 && c.Q24 <= 493).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue5 = dtValue.NewRow();
+			//drValue5["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 883 && c.Q24 <= 883).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue6 = dtValue.NewRow();
+			//drValue6["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1026 && c.Q24 <= 1200).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue7 = dtValue.NewRow();
+			//drValue7["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1200 && c.Q24 <= 1432).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue8 = dtValue.NewRow();
+			//drValue8["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1432 && c.Q24 <= 1695).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue9 = dtValue.NewRow();
+			//drValue9["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1695 && c.Q24 <= 2133).Select(c => c.Q4 ?? 0).Average();
+			//DataRow drValue10 = dtValue.NewRow();
+			//drValue10["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 2133).Select(c => c.Q4 ?? 0).Average();
+
+
 			dtValue.Rows.Add(drValue1);
 			dtValue.Rows.Add(drValue2);
 			dtValue.Rows.Add(drValue3);
@@ -10791,7 +10919,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -10804,15 +10932,16 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -10912,10 +11041,10 @@ namespace PracticePerformanceAssessmentDataAccess
 				x = x + 100;
 			}
 
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, 550, (bitmapsizeYaxis - 150) + 50);
 
-			objGraphic.DrawString("Note:Full time equivalent(FTE) equals 2,080 hours per year", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Note: Full time equivalent(FTE) equals 2,080 hours per year", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 150, (bitmapsizeYaxis - 50) + 10);
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
@@ -10923,13 +11052,13 @@ namespace PracticePerformanceAssessmentDataAccess
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + Graph1 + bookMarkNum + ".png";
@@ -10975,6 +11104,28 @@ namespace PracticePerformanceAssessmentDataAccess
 			drValue10["value"] = "13.0";
 
 
+			//DataRow drValue1 = dtValue.NewRow();
+			//drValue1["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 493).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue2 = dtValue.NewRow();
+			//drValue2["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 493 && c.Q24 <= 642).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue3 = dtValue.NewRow();
+			//drValue3["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 642 && c.Q24 <= 767).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue4 = dtValue.NewRow();
+			//drValue4["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 767 && c.Q24 <= 493).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue5 = dtValue.NewRow();
+			//drValue5["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 883 && c.Q24 <= 883).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue6 = dtValue.NewRow();
+			//drValue6["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1026 && c.Q24 <= 1200).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue7 = dtValue.NewRow();
+			//drValue7["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1200 && c.Q24 <= 1432).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue8 = dtValue.NewRow();
+			//drValue8["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1432 && c.Q24 <= 1695).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue9 = dtValue.NewRow();
+			//drValue9["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1695 && c.Q24 <= 2133).Select(c => c.Q11 ?? 0).Average();
+			//DataRow drValue10 = dtValue.NewRow();
+			//drValue10["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 2133).Select(c => c.Q11 ?? 0).Average();
+
+
 			dtValue.Rows.Add(drValue1);
 			dtValue.Rows.Add(drValue2);
 			dtValue.Rows.Add(drValue3);
@@ -10992,7 +11143,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -11005,15 +11156,16 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
 
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
@@ -11111,23 +11263,23 @@ namespace PracticePerformanceAssessmentDataAccess
 				x = x + 100;
 			}
 
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, 550, (bitmapsizeYaxis - 150) + 50);
 
-			objGraphic.DrawString("Note:Full time equivalent(FTE) equals 2,080 hours per year", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Note: Full time equivalent(FTE) equals 2,080 hours per year", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 					blackBrush, 150, (bitmapsizeYaxis - 50));
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + Graph2 + bookMarkNum + ".png";
@@ -11174,25 +11326,25 @@ namespace PracticePerformanceAssessmentDataAccess
 			drValue10["value"] = "35.0";
 
 			//DataRow drValue1 = dtValue.NewRow();
-			//drValue1["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 493).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue1["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 0 && c.Q24 <= 493).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue2 = dtValue.NewRow();
-			//drValue2["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 493 && c.Q24 <= 642).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue2["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 493 && c.Q24 <= 642).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue3 = dtValue.NewRow();
-			//drValue3["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 642 && c.Q24 <= 767).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue3["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 642 && c.Q24 <= 767).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue4 = dtValue.NewRow();
-			//drValue4["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 767 && c.Q24 <= 493).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue4["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 767 && c.Q24 <= 493).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue5 = dtValue.NewRow();
-			//drValue5["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 883 && c.Q24 <= 883).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue5["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 883 && c.Q24 <= 883).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue6 = dtValue.NewRow();
-			//drValue6["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1026 && c.Q24 <= 1200).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue6["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1026 && c.Q24 <= 1200).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue7 = dtValue.NewRow();
-			//drValue7["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1200 && c.Q24 <= 1432).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue7["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1200 && c.Q24 <= 1432).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue8 = dtValue.NewRow();
-			//drValue8["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1432 && c.Q24 <= 1695).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue8["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1432 && c.Q24 <= 1695).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue9 = dtValue.NewRow();
-			//drValue9["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1695 && c.Q24 <= 2133).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue9["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 1695 && c.Q24 <= 2133).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 			//DataRow drValue10 = dtValue.NewRow();
-			//drValue10["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 2133).Select(c => ((c.Q24 - ((c.Q52j + c.Q53 + c.Q54 + c.Q55 + c.Q56 + c.Q57 + c.Q58 + c.Q58 + c.Q59 + c.Q60))) / c.Q24) ?? 0 * 100).Average();
+			//drValue10["value"] = db.Source_InputDataBenchMarkSource.Where(c => c.Q24 > 2133).Select(c => ((c.Q24 - ((c.Q52j ?? 0 + c.Q53 ?? 0 + c.Q54 ?? 0 + c.Q55 ?? 0 + c.Q56 ?? 0 + c.Q57 ?? 0 + c.Q58 ?? 0 + c.Q58 ?? 0 + c.Q59 ?? 0 + c.Q60 ?? 0))) / c.Q24) ?? 0 * 100).Average();
 
 
 			dtValue.Rows.Add(drValue1);
@@ -11212,7 +11364,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			Bitmap barBitmap = new Bitmap(bitmapsizeXaxis, bitmapsizeYaxis);
 			Graphics objGraphic = Graphics.FromImage(barBitmap);
 
-			Brush lightblueBrush = new SolidBrush(Color.LightBlue);
+			Brush lightblueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 			Brush blueBrush = new SolidBrush(Color.Blue);
 			Brush greenBrush = new SolidBrush(Color.Green);
 			Brush whiteBrush = new SolidBrush(Color.White);
@@ -11225,16 +11377,18 @@ namespace PracticePerformanceAssessmentDataAccess
 			Pen blackPen = new Pen(Color.Black, 1);
 
 			objGraphic.FillRectangle(whiteBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, bitmapsizeYaxis));
+			objGraphic.FillRectangle(lightblueBrush, new System.Drawing.Rectangle(0, 0, bitmapsizeXaxis, 100));
 
 			Single sngHighestValueNew = new Single();
 			Single sngHeight1New = new Single();
 
-			RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
+			RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 100, Width = bitmapsizeXaxis } };
 			//graphics.DrawRectangle(pen, rect2);
 			//To write header text
 			StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 50, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, header, format);
-
+			objGraphic.DrawString(title, new System.Drawing.Font("Arial", 40, FontStyle.Italic, GraphicsUnit.Pixel), whiteBrush, header, format);
+			objGraphic.DrawString("% of Gross Revenue", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+				blackBrush, 50, 120);
 			//objGraphic.DrawString(title, new System.Drawing.Font("Arial", 35, FontStyle.Italic, GraphicsUnit.Pixel), blackBrush, 30, 28);
 
 			int i = 1;
@@ -11333,20 +11487,20 @@ namespace PracticePerformanceAssessmentDataAccess
 				x = x + 100;
 			}
 
-			objGraphic.DrawString("Anual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
+			objGraphic.DrawString("Annual Gross Revenue ($000)", new System.Drawing.Font("Arial", 30, FontStyle.Regular, GraphicsUnit.Pixel),
 						blackBrush, 550, (bitmapsizeYaxis - 150) + 40);
 			objGraphic.DrawLine(blackPen, 200, (bitmapsizeYaxis - 200), (bitmapsizeXaxis - 100), (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, 200, 200, bitmapsizeXaxis - 100, 200);
 			objGraphic.DrawLine(blackPen, 200, 200, 200, (bitmapsizeYaxis - 200));
 			objGraphic.DrawLine(blackPen, bitmapsizeXaxis - 100, 200, bitmapsizeXaxis - 100, (bitmapsizeYaxis - 200));
 
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(bitmapsizeXaxis, 0));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(bitmapsizeXaxis, 0),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, bitmapsizeYaxis),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 6), new System.Drawing.Point(0, bitmapsizeYaxis),
 				new System.Drawing.Point(bitmapsizeXaxis, bitmapsizeYaxis));
-			objGraphic.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+			objGraphic.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 				new System.Drawing.Point(0, bitmapsizeYaxis));
 
 			string filepath = imagelocation + @"\linegraph" + bookMarkNum + ".png";
@@ -11826,11 +11980,11 @@ namespace PracticePerformanceAssessmentDataAccess
 		}
 
 		//Methods to generate graphs for Key metrics report
-		private string CreatePieChart(string graphTitle, List<decimal> piePercents, List<Color> pieColors, List<string> _description, string imagePath)
+		private string CreatePieChart(int headerHeight, string graphTitle, List<decimal> piePercents, List<Color> pieColors, List<string> _description, string imagePath)
 		{
 			try
 			{
-				Bitmap bmp = new Bitmap(700, 750);
+				Bitmap bmp = new Bitmap(700, 800);
 
 				Graphics pieGraphics = Graphics.FromImage(bmp);
 				pieGraphics.Clear(Color.White);
@@ -11920,21 +12074,21 @@ namespace PracticePerformanceAssessmentDataAccess
 					ControlPaint.DrawBorder(pieGraphics, borderRect, Color.Black, ButtonBorderStyle.Solid);
 
 					//TO draw Pie Chart Header
-					RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 120, Width = 700 } };
-					SolidBrush blueBrush = new SolidBrush(Color.White);
+					RectangleF header = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = headerHeight, Width = 700 } };
+					SolidBrush blueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 					pieGraphics.FillRectangle(blueBrush, header);
 
 					//To write header text
-					StringFormat format = new StringFormat() { Alignment = StringAlignment.Center };
-					pieGraphics.DrawString(graphTitle, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, header, format);
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-						new System.Drawing.Point(700, 0));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(700, 0),
-						new System.Drawing.Point(700, 750));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 750),
-						new System.Drawing.Point(700, 750));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-						new System.Drawing.Point(0, 750));
+					StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+					pieGraphics.DrawString(graphTitle, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, header, format);
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+						new System.Drawing.Point(800, 0));
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(700, 0),
+						new System.Drawing.Point(700, 800));
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 800),
+						new System.Drawing.Point(700, 800));
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+						new System.Drawing.Point(0, 800));
 
 					bmp.Save(imagePath);
 					return "success";
@@ -12060,21 +12214,21 @@ namespace PracticePerformanceAssessmentDataAccess
 
 					//TO draw Pie Chart Header
 					RectangleF header = new RectangleF() { Location = new PointF() { X = 5, Y = 5 }, Size = new SizeF() { Height = 100, Width = 1000 } };
-					SolidBrush blueBrush = new SolidBrush(Color.White);
+					SolidBrush blueBrush = new SolidBrush(Color.FromArgb(255, 51, 102, 153));
 					pieGraphics.FillRectangle(blueBrush, header);
 
 					//To write header text
-					StringFormat format = new StringFormat() { Alignment = StringAlignment.Center };
+					StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 					pieGraphics.DrawString(graphTitle, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, header, format);
 
 
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 							new System.Drawing.Point(1000, 0));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1000, 0),
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1000, 0),
 						new System.Drawing.Point(1000, 600));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 600),
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 600),
 						new System.Drawing.Point(1000, 600));
-					pieGraphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+					pieGraphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(0, 600));
 
 					bmp.Save(imagePath);
@@ -12118,14 +12272,14 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(1050, 180);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
 				RectangleF headerRowStringRect = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 80, Width = 1100 } };
 				StringFormat rowStringFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				using (Brush stringBrush = new SolidBrush(Color.Black))
+				using (Brush stringBrush = new SolidBrush(Color.White))
 				{
 					graphics.DrawString("Percent of Complete Eye Exams by Type", new System.Drawing.Font("Arial", 25, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 				}
@@ -12135,15 +12289,15 @@ namespace PracticePerformanceAssessmentDataAccess
 				{
 					headerRowStringRect = new RectangleF() { Location = new PointF() { X = x1, Y = 82 }, Size = new SizeF() { Height = 60, Width = 180 } };
 					rowStringFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-					using (Brush stringBrush = new SolidBrush(Color.Black))
+					using (Brush stringBrush = new SolidBrush(Color.White))
 					{
-						graphics.DrawString(headerBlockStringList1[j], new System.Drawing.Font("Arial", 20), stringBrush, headerRowStringRect, rowStringFormat);
+						graphics.DrawString(headerBlockStringList1[j], new System.Drawing.Font("Arial", 20, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 					}
 
 					headerRowStringRect = new RectangleF() { Location = new PointF() { X = x1, Y = 142 }, Size = new SizeF() { Height = 30, Width = 180 } };
-					using (Brush stringBrush = new SolidBrush(Color.Black))
+					using (Brush stringBrush = new SolidBrush(Color.White))
 					{
-						graphics.DrawString(headerBlockStringList2[j], new System.Drawing.Font("Arial", 14), stringBrush, headerRowStringRect, rowStringFormat);
+						graphics.DrawString(headerBlockStringList2[j], new System.Drawing.Font("Arial", 14, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 					}
 
 					x1 += 210;
@@ -12187,7 +12341,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					xBlock2 = 15;
 					point = new System.Drawing.Point(xBlock2, yBlock2);
 					dataRect = new System.Drawing.Rectangle(point, dataRectSize2);
-					using (SolidBrush brush = new SolidBrush(Color.WhiteSmoke))
+					using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 208, 208, 208)))
 					{
 						graphics.FillRectangle(brush, dataRect);
 					}
@@ -12224,13 +12378,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				}
 
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1050, 700)));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(1050, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1050, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1050, 0),
 					new System.Drawing.Point(1050, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 700),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 700),
 					new System.Drawing.Point(1050, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 700));
 				bmp.Save(imagePath);
 				return "success";
@@ -12325,16 +12479,16 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(1300, 180);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
 				RectangleF headerRowStringRect = new RectangleF() { Location = new PointF() { X = 0, Y = 0 }, Size = new SizeF() { Height = 60, Width = 1300 } };
 				StringFormat rowStringFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				using (Brush stringBrush = new SolidBrush(Color.Black))
+				using (Brush stringBrush = new SolidBrush(Color.White))
 				{
-					graphics.DrawString("Expense Category % of Gross Revenue by Practice Size ", new System.Drawing.Font("Arial", 25, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
+					graphics.DrawString("Expense Category % of Gross Revenue by Practice Size", new System.Drawing.Font("Arial", 25, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 					//graphics.DrawLine(new Pen(stringBrush), new System.Drawing.Point(30, 35), new System.Drawing.Point(670, 35));
 				}
 
@@ -12343,15 +12497,15 @@ namespace PracticePerformanceAssessmentDataAccess
 				{
 					headerRowStringRect = new RectangleF() { Location = new PointF() { X = x1, Y = 61 }, Size = new SizeF() { Height = 50, Width = 220 } };
 					rowStringFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-					using (Brush stringBrush = new SolidBrush(Color.Black))
+					using (Brush stringBrush = new SolidBrush(Color.White))
 					{
-						graphics.DrawString(headerBlockStringList1[j], new System.Drawing.Font("Arial", 20, FontStyle.Regular), stringBrush, headerRowStringRect, rowStringFormat);
+						graphics.DrawString(headerBlockStringList1[j], new System.Drawing.Font("Arial", 20, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 					}
 
 					headerRowStringRect = new RectangleF() { Location = new PointF() { X = x1, Y = 111 }, Size = new SizeF() { Height = 30, Width = 220 } };
-					using (Brush stringBrush = new SolidBrush(Color.Black))
+					using (Brush stringBrush = new SolidBrush(Color.White))
 					{
-						graphics.DrawString(headerBlockStringList2[j], new System.Drawing.Font("Arial", 15), stringBrush, headerRowStringRect, rowStringFormat);
+						graphics.DrawString(headerBlockStringList2[j], new System.Drawing.Font("Arial", 15, FontStyle.Italic), stringBrush, headerRowStringRect, rowStringFormat);
 					}
 
 					x1 += 200;
@@ -12395,7 +12549,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					xBlock2 = 30;
 					point = new System.Drawing.Point(xBlock2, yBlock2);
 					dataRect = new System.Drawing.Rectangle(point, dataRectSize2);
-					using (SolidBrush brush = new SolidBrush(Color.WhiteSmoke))
+					using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 208, 208, 208)))
 					{
 						graphics.FillRectangle(brush, dataRect);
 					}
@@ -12443,13 +12597,13 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1300, 1000)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(1300, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1300, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1300, 0),
 					new System.Drawing.Point(1300, 1000));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 1000),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 1000),
 					new System.Drawing.Point(1300, 1000));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 1000));
 				bmp.Save(imagePath);
 				return "success";
@@ -12465,26 +12619,26 @@ namespace PracticePerformanceAssessmentDataAccess
 		{
 			try
 			{
-				Bitmap bmp = new Bitmap(1100, 700);
+				Bitmap bmp = new Bitmap(1000, 600);
 				Graphics graphics = Graphics.FromImage(bmp);
 				graphics.Clear(Color.White);
 
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1100, 120);
+				Size size1 = new Size(1000, 120);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
-				Size size2 = new Size(1100, 580);
-				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 120), size2);
+				Size size2 = new Size(1000, 480);
+				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString("Annual Medical Eye Care Visits by Type per 1,000 Active Patients", new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString("Annual Medical Eye Care Visits by Type per 1,000 Active Patients", new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12492,8 +12646,8 @@ namespace PracticePerformanceAssessmentDataAccess
 					graphics.FillRectangle(brush, rect2);
 				}
 
-				Size size3 = new Size(900, 460);
-				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(100, 150), size3);
+				Size size3 = new Size(900, 400);
+				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(50, 150), size3);
 				Pen pen = new Pen(Color.Black, 2);
 				graphics.DrawRectangle(pen, rect3);
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12505,7 +12659,7 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				for (int i = 0; i < eyeCareTypes.Count; i++)
 				{
-					int x = 120;
+					int x = 70;
 					format = new StringFormat() { Alignment = StringAlignment.Near };
 					System.Drawing.Point pt;
 					System.Drawing.Font font;
@@ -12516,14 +12670,14 @@ namespace PracticePerformanceAssessmentDataAccess
 						if (i == eyeCareTypes.Count - 1 || i == 0)
 						{
 							pt = new System.Drawing.Point(x, i != 0 ? y + 20 : y - 2);
-							font = new System.Drawing.Font("Arial", 15, FontStyle.Regular);
-							colheight = 60;
+							font = new System.Drawing.Font("Arial", 16, FontStyle.Regular);
+							colheight = 50;
 						}
 						else
 						{
 							pt = new System.Drawing.Point(x, y + 10);
-							font = new System.Drawing.Font("Arial", 15, FontStyle.Regular);
-							colheight = 40;
+							font = new System.Drawing.Font("Arial", 16, FontStyle.Regular);
+							colheight = 30;
 
 						}
 						System.Drawing.Rectangle dataRow;
@@ -12551,18 +12705,18 @@ namespace PracticePerformanceAssessmentDataAccess
 								break;
 						}
 					}
-					y += 40;
+					y += 30;
 				}
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 700)));
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1000, 600)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-						new System.Drawing.Point(1100, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1100, 0),
-					new System.Drawing.Point(1100, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 700),
-					new System.Drawing.Point(1100, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-					new System.Drawing.Point(0, 700));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+						new System.Drawing.Point(1000, 0));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1000, 0),
+					new System.Drawing.Point(1000, 600));
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 600),
+					new System.Drawing.Point(1000, 600));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+					new System.Drawing.Point(0, 600));
 				bmp.Save(imagePath);
 				return "success";
 			}
@@ -12576,27 +12730,27 @@ namespace PracticePerformanceAssessmentDataAccess
 		{
 			try
 			{
-				Bitmap bmp = new Bitmap(1300, 700);
+				Bitmap bmp = new Bitmap(1300, 540);
 				Graphics graphics = Graphics.FromImage(bmp);
 				graphics.Clear(Color.White);
 
 
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1300, 120);
+				Size size1 = new Size(1300, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
-				Size size2 = new Size(1300, 580);
-				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 120), size2);
+				Size size2 = new Size(1300, 500);
+				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString("Soft Lens Inventory Requirements", new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString("Soft Lens Inventory Requirements", new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12604,8 +12758,8 @@ namespace PracticePerformanceAssessmentDataAccess
 					graphics.FillRectangle(brush, rect2);
 				}
 
-				Size size3 = new Size(1200, 460);
-				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(50, 120), size3);
+				Size size3 = new Size(1200, 350);
+				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(50, 140), size3);
 				Pen pen = new Pen(Color.Black, 2);
 				graphics.DrawRectangle(pen, rect3);
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12628,13 +12782,13 @@ namespace PracticePerformanceAssessmentDataAccess
 						if (i == practicalAnnGrossRev.Count - 1 || i == 0)
 						{
 							pt = new System.Drawing.Point(x, i != 0 ? y + 20 : y);
-							font = new System.Drawing.Font("Arial", 15, FontStyle.Regular);
+							font = new System.Drawing.Font("Arial", 18, FontStyle.Regular);
 							colheight = 60;
 						}
 						else
 						{
 							pt = new System.Drawing.Point(x, y + 10);
-							font = new System.Drawing.Font("Arial", 15);
+							font = new System.Drawing.Font("Arial", 18);
 							colheight = 60;
 
 						}
@@ -12642,42 +12796,42 @@ namespace PracticePerformanceAssessmentDataAccess
 						switch (j)
 						{
 							case 0:
-								sizeDtCol = new Size(450, colheight);
+								sizeDtCol = new Size(425, colheight);
 								dataRow = new System.Drawing.Rectangle(pt, sizeDtCol);
 								graphics.DrawString(practicalAnnGrossRev[i], font, Brushes.Black, dataRow, format);
-								x += 450;
+								x += 425;
 								break;
 
 							case 1:
-								sizeDtCol = new Size(350, colheight);
+								sizeDtCol = new Size(375, colheight);
 								dataRow = new System.Drawing.Rectangle(pt, sizeDtCol);
 								graphics.DrawString(medianList[i], font, Brushes.Black, dataRow, format);
-								x += 350;
+								x += 375;
 								break;
 
 							case 2:
-								sizeDtCol = new Size(350, colheight);
+								sizeDtCol = new Size(375, colheight);
 								dataRow = new System.Drawing.Rectangle(pt, sizeDtCol);
 								graphics.DrawString(softLenInv[i], font, Brushes.Black, dataRow, format);
-								x += 350;
+								x += 375;
 								break;
 						}
 					}
 					if (i == 0)
-						y += 70;
+						y += 60;
 					else
-						y += 50;
+						y += 40;
 				}
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1300, 700)));
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1300, 540)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(1300, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1300, 0),
-					new System.Drawing.Point(1300, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 700),
-					new System.Drawing.Point(1300, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-					new System.Drawing.Point(0, 700));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1300, 0),
+					new System.Drawing.Point(1300, 540));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 540),
+					new System.Drawing.Point(1300, 540));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+					new System.Drawing.Point(0, 540));
 				bmp.Save(imagePath);
 				return "success";
 			}
@@ -12701,7 +12855,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(550, 50);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
@@ -12711,7 +12865,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 15, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 15, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12768,13 +12922,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				}
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(550, 250)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(550, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(550, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(550, 0),
 					new System.Drawing.Point(550, 250));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 250),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 250),
 					new System.Drawing.Point(550, 250));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 250));
 				bmp.Save(imagePath);
 				return "success";
@@ -12799,7 +12953,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(1200, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
@@ -12809,7 +12963,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 30, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 30, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12886,13 +13040,13 @@ namespace PracticePerformanceAssessmentDataAccess
 
 
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(1200, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1200, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1200, 0),
 					new System.Drawing.Point(1200, 800));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 800),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 800),
 					new System.Drawing.Point(1200, 800));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 800));
 				bmp.Save(imagePath);
 				return "success";
@@ -12907,7 +13061,7 @@ namespace PracticePerformanceAssessmentDataAccess
 		{
 			try
 			{
-				Bitmap bmp = new Bitmap(1100, 700);
+				Bitmap bmp = new Bitmap(1100, 600);
 				Graphics graphics = Graphics.FromImage(bmp);
 				graphics.Clear(Color.White);
 
@@ -12915,17 +13069,17 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(1100, 140);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
 				Size size2 = new Size(1100, 600);
-				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 144), size2);
+				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 120), size2);
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -12945,42 +13099,42 @@ namespace PracticePerformanceAssessmentDataAccess
 				format.Alignment = StringAlignment.Far;
 				Size barSize;
 				int width = 0;
-				int yBar = 200;
+				int yBar = 160;
 				int xBar = 310;
 				for (int i = 1; i <= yAxisData.Count; i++)
 				{
-					width = Convert.ToInt32((graphData[i - 1] / 700) * 100);
-					barSize = new Size(width, 10);
+					width = Convert.ToInt32((graphData[i - 1] / 700) * 1000);
+					barSize = new Size(width, 30);
 					System.Drawing.Rectangle bar = new System.Drawing.Rectangle(new System.Drawing.Point(xBar, yBar), barSize);
-					System.Drawing.Rectangle yDataRect = new System.Drawing.Rectangle(new System.Drawing.Point(25, yBar), new Size(250, 30));
+					System.Drawing.Rectangle yDataRect = new System.Drawing.Rectangle(new System.Drawing.Point(25, yBar), new Size(250, 40));
 					using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 					{
 						graphics.FillRectangle(brush, bar);
 					}
 					using (SolidBrush brush = new SolidBrush(Color.Black))
 					{
-						graphics.DrawString(yAxisData[i - 1], new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, yDataRect, format);
+						graphics.DrawString(yAxisData[i - 1], new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, yDataRect, format);
 						if (!(graphData[i - 1] <= 0))
-							graphics.DrawString("+" + graphData[i - 1] + "%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, (xBar + width + 5), yBar);
+							graphics.DrawString("+" + graphData[i - 1] + "%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, (xBar + width + 5), yBar);
 					}
-					yBar += 40;
+					yBar += 50;
 				}
 
 				using (SolidBrush brush = new SolidBrush(Color.Black))
 				{
-					graphics.DrawString("Source : PPA Estimations", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, new System.Drawing.Point(60, 560));
+					graphics.DrawString("Source : PPA Estimations", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, new System.Drawing.Point(60, 555));
 				}
 
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 700)));
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 600)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(1100, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1100, 0),
-					new System.Drawing.Point(1100, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 700),
-					new System.Drawing.Point(1100, 700));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-					new System.Drawing.Point(0, 700));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1100, 0),
+					new System.Drawing.Point(1100, 600));
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 600),
+					new System.Drawing.Point(1100, 600));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+					new System.Drawing.Point(0, 600));
 
 				bmp.Save(imagePath);
 				return "success";
@@ -12991,7 +13145,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			}
 		}
 
-		private string CreateVerticalGraph(string imagePath, string graphHeader, List<string> xAxisData, List<decimal> graphData, bool isYAxisDataShown = false)
+		private string CreateVerticalGraph(int headerHeight, string imagePath, string graphHeader, List<string> xAxisData, List<decimal> graphData, bool isYAxisDataShown = false)
 		{
 			try
 			{
@@ -13000,10 +13154,10 @@ namespace PracticePerformanceAssessmentDataAccess
 				graphics.Clear(Color.White);
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1100, 140);
+				Size size1 = new Size(1100, headerHeight);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
@@ -13013,7 +13167,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13031,15 +13185,16 @@ namespace PracticePerformanceAssessmentDataAccess
 				}
 				graphics.DrawLine(pen, new System.Drawing.Point(60, 600), new System.Drawing.Point(60, 150));
 				graphics.DrawLine(pen, new System.Drawing.Point(60, 600), new System.Drawing.Point(1030, 600));
-				graphics.DrawString("Adds to 100%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, 485, 130, format);
+				graphics.DrawString("% with Full-Time Office Manager", new System.Drawing.Font("Arial", 16, FontStyle.Regular), Brushes.Black, 20, 130, format);
+				graphics.DrawString("Adds to 100%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), Brushes.Black, 925, 130, format);
 				if (graphHeader.Contains("Unit Sales Mix"))
 				{
-					graphics.DrawString("Frames Retail Price", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, 485, 250, format);
+					graphics.DrawString("Frames Retail Price", new System.Drawing.Font("Arial", 16, FontStyle.Regular), Brushes.Black, 485, 250, format);
 
 				}
 				else if (graphHeader.Contains("Full Time Office"))
 				{
-					graphics.DrawString("Annual Gross Revenue", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, 485, 250, format);
+					graphics.DrawString("Annual Gross Revenue", new System.Drawing.Font("Arial", 16, FontStyle.Regular), Brushes.Black, 485, 250, format);
 
 				}
 				//draw y axis points
@@ -13062,7 +13217,7 @@ namespace PracticePerformanceAssessmentDataAccess
 						graphics.DrawLine(pen, p1, p2);
 						using (SolidBrush brush = new SolidBrush(Color.Black))
 						{
-							graphics.DrawString(yAxisData[i - 1] + "%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, 15, y1 - 5);
+							graphics.DrawString(yAxisData[i - 1] + "%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, 15, y1 - 5);
 						}
 					}
 				}
@@ -13085,21 +13240,21 @@ namespace PracticePerformanceAssessmentDataAccess
 					}
 					using (SolidBrush brush = new SolidBrush(Color.Black))
 					{
-						graphics.DrawString(xAxisData[i - 1], new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, new RectangleF(xBar - 10, 620, 90, 130), new System.Drawing.StringFormat() { Alignment = StringAlignment.Center, });
+						graphics.DrawString(xAxisData[i - 1], new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, new RectangleF(xBar - 30, 620, 140, 130), new System.Drawing.StringFormat() { Alignment = StringAlignment.Center, });
 						if (!(graphData[i - 1] <= 0))
-							graphics.DrawString(graphData[i - 1] + "%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, xBar, yBar - 30);
+							graphics.DrawString(graphData[i - 1] + "%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, xBar, yBar - 30);
 					}
 					xBar += distanceOfXAxisPts;
 				}
 
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 760)));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 						new System.Drawing.Point(1100, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1100, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1100, 0),
 					new System.Drawing.Point(1100, 760));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 760),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 760),
 					new System.Drawing.Point(1100, 760));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 760));
 				bmp.Save(imagePath);
 				return "success";
@@ -13115,26 +13270,26 @@ namespace PracticePerformanceAssessmentDataAccess
 		{
 			try
 			{
-				Bitmap bmp = new Bitmap(1450, 800);
+				Bitmap bmp = new Bitmap(1550, 800);
 				Graphics graphics = Graphics.FromImage(bmp);
 				graphics.Clear(Color.White);
 
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1400, 100);
+				Size size1 = new Size(1550, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
-				Size size2 = new Size(1400, 692);
+				Size size2 = new Size(1550, 692);
 				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//graphics.DrawRectangle(pen, rect2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 30, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 30, FontStyle.Italic), Brushes.White, rect1, format);
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
 				{
@@ -13176,10 +13331,10 @@ namespace PracticePerformanceAssessmentDataAccess
 
 					//Drawing Graph Plots
 					decimal temp = (graphDataMin[i - 1] / xEnd) * 1000;
-					x1 = 360 + Convert.ToInt32(temp);
+					x1 = 450 + Convert.ToInt32(temp);
 
 					decimal temp2 = (graphDataMax[i - 1] / xEnd) * 1000;
-					x2 = 360 + Convert.ToInt32(temp2);
+					x2 = 450 + Convert.ToInt32(temp2);
 					y1 = y;
 
 					int width = x2 - x1;
@@ -13199,15 +13354,15 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				}
 
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1450, 800)));
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1550, 800)));
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-						new System.Drawing.Point(1450, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1450, 0),
-					new System.Drawing.Point(1450, 800));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 800),
-					new System.Drawing.Point(1450, 800));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+						new System.Drawing.Point(1550, 0));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1550, 0),
+					new System.Drawing.Point(1550, 800));
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 800),
+					new System.Drawing.Point(1550, 800));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 800));
 
 
@@ -13221,7 +13376,7 @@ namespace PracticePerformanceAssessmentDataAccess
 			}
 		}
 
-		private string CreateHorizontalBarGraph(string imagePath, string graphHeader, List<string> yAxisData, List<decimal> graphData, bool isXAxisDrawn = false)
+		private string CreateHorizontalBarGraph(int headerHeight, string imagePath, string graphHeader, List<string> yAxisData, List<decimal> graphData, bool isXAxisDrawn = false)
 		{
 			try
 			{
@@ -13230,16 +13385,16 @@ namespace PracticePerformanceAssessmentDataAccess
 				graphics.Clear(Color.White);
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1150, 100);
+				Size size1 = new Size(1150, headerHeight);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
 				Size size2 = new Size(1150, 400);
-				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 120), size2);
+				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, headerHeight), size2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
@@ -13247,10 +13402,10 @@ namespace PracticePerformanceAssessmentDataAccess
 				{
 					Size size11 = new Size(1150, 140);
 					System.Drawing.Rectangle rect11 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size11);
-					graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect11, format);
+					graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect11, format);
 				}
 				else
-					graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+					graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
 				{
@@ -13259,8 +13414,8 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				if (graphHeader.Contains("Lens Modality"))
 				{
-					rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(600, 100), new Size(400, 60));
-					graphics.DrawString("Median % of Patients Purchasing Annual Supply", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, rect2);
+					rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(600, 110), new Size(500, 60));
+					graphics.DrawString("Median % of Patients Purchasing Annual Supply", new System.Drawing.Font("Arial", 16, FontStyle.Regular), Brushes.Black, rect2);
 				}
 
 				Size size3 = new Size(800, 200);
@@ -13299,7 +13454,7 @@ namespace PracticePerformanceAssessmentDataAccess
 						graphics.DrawLine(pen, p1, p2);
 						using (SolidBrush brush = new SolidBrush(Color.Black))
 						{
-							graphics.DrawString(length + "%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, x1 - 7, 410);
+							graphics.DrawString(length + "%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, x1 - 7, 410);
 						}
 						length = length + Convert.ToInt32(Math.Round((Convert.ToInt32(graphData.Max()) / 4d), 0));
 					}
@@ -13317,7 +13472,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					yDataRect = new System.Drawing.Rectangle(new System.Drawing.Point(1, yBar - 5), new Size(300, 100));
 					using (SolidBrush brush = new SolidBrush(Color.Black))
 					{
-						graphics.DrawString(yAxisData[i - 1], new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, yDataRect, new StringFormat() { Alignment = StringAlignment.Far });
+						graphics.DrawString(yAxisData[i - 1], new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, yDataRect, new StringFormat() { Alignment = StringAlignment.Far });
 					}
 
 					width = Convert.ToInt32((graphData[i - 1] / length) * 175);
@@ -13329,18 +13484,18 @@ namespace PracticePerformanceAssessmentDataAccess
 
 					using (SolidBrush brush = new SolidBrush(Color.Black))
 					{
-						graphics.DrawString(graphData[i - 1] + "%", new System.Drawing.Font("Arial", 15, FontStyle.Regular), brush, (xBar + width + 5), yBar);
+						graphics.DrawString(graphData[i - 1] + "%", new System.Drawing.Font("Arial", 16, FontStyle.Regular), brush, (xBar + width + 5), yBar);
 					}
 				}
 
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1150, 500)));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(1150, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1150, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1150, 0),
 					new System.Drawing.Point(1150, 500));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 500),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 500),
 					new System.Drawing.Point(1150, 500));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 500));
 
 				bmp.Save(imagePath);
@@ -13367,16 +13522,16 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size size1 = new Size(1150, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
 				Size size2 = new Size(1150, 650);
-				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 120), size2);
+				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
 				{
@@ -13450,13 +13605,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1150, 720)));
 
 
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(1150, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1150, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1150, 0),
 					new System.Drawing.Point(1150, 720));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 720),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 720),
 					new System.Drawing.Point(1150, 720));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 720));
 
 				bmp.Save(imagePath);
@@ -13490,23 +13645,23 @@ namespace PracticePerformanceAssessmentDataAccess
 																					};
 
 
-				Bitmap bmp = new Bitmap(1100, 840);
+				Bitmap bmp = new Bitmap(1130, 840);
 				Graphics graphics = Graphics.FromImage(bmp);
 
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1100, 80);
+				Size size1 = new Size(1130, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
-				Size size2 = new Size(1100, 740);
+				Size size2 = new Size(1130, 740);
 				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13514,8 +13669,8 @@ namespace PracticePerformanceAssessmentDataAccess
 					graphics.FillRectangle(brush, rect2);
 				}
 
-				Size size3 = new Size(1000, 680);
-				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(30, 100), size3);
+				Size size3 = new Size(1050, 700);
+				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(40, 120), size3);
 				Pen pen = new Pen(Color.Black, 1);
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13613,15 +13768,14 @@ namespace PracticePerformanceAssessmentDataAccess
 						x1 += widthOfDataCol;
 
 				}
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 840)));
-				graphics.Clear(Color.White);
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-						new System.Drawing.Point(1100, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1100, 0),
-					new System.Drawing.Point(1100, 840));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 840),
-					new System.Drawing.Point(1100, 840));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1130, 840)));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+						new System.Drawing.Point(1130, 0));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1130, 0),
+					new System.Drawing.Point(1130, 840));
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 840),
+					new System.Drawing.Point(1130, 840));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 840));
 				bmp.Save(imagePath);
 				return "success";
@@ -13657,10 +13811,10 @@ namespace PracticePerformanceAssessmentDataAccess
 				graphics.Clear(Color.White);
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1250, 60);
+				Size size1 = new Size(1250, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
@@ -13669,7 +13823,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 64), size2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13695,7 +13849,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				System.Drawing.Rectangle dataRect = new System.Drawing.Rectangle(pt1, new System.Drawing.Size(widthOfDataCol * 5, 30));
 
 				y1 += 50;
-				graphics.DrawString("Annual Gross Revenue", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
+				graphics.DrawString("Annual Gross Revenue", new System.Drawing.Font("Arial", 18, FontStyle.Regular), Brushes.Black, dataRect, format);
 				graphics.DrawLine(pen, x1 + (widthOfDataCol * 2), y1, x1 + (widthOfDataCol * 7) - 20, y1);
 
 				format.Alignment = StringAlignment.Near;
@@ -13712,16 +13866,16 @@ namespace PracticePerformanceAssessmentDataAccess
 						switch (j)
 						{
 							case 1:
-								graphics.DrawString(annGrossRev[i], new System.Drawing.Font("Arial", 15, FontStyle.Regular | FontStyle.Underline), Brushes.Black, dataRect, format);
+								graphics.DrawString(annGrossRev[i], new System.Drawing.Font("Arial", 18, FontStyle.Regular | FontStyle.Underline), Brushes.Black, dataRect, format);
 								break;
 							case 2:
-								graphics.DrawString(medianAnnFrames[i], new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
+								graphics.DrawString(medianAnnFrames[i], new System.Drawing.Font("Arial", 18, FontStyle.Regular), Brushes.Black, dataRect, format);
 								break;
 							case 3:
 								graphics.DrawString(Convert.ToString(idealFramesInv[i]), new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
 								break;
 							case 4:
-								graphics.DrawString(excessInv[i] + "+", new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
+								graphics.DrawString(excessInv[i] + "+", new System.Drawing.Font("Arial", 18, FontStyle.Regular), Brushes.Black, dataRect, format);
 								break;
 							case 5:
 								graphics.DrawString("<" + insuffInv[i], new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
@@ -13752,13 +13906,13 @@ namespace PracticePerformanceAssessmentDataAccess
 				}
 
 				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1250, 600)));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(1250, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1250, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1250, 0),
 					new System.Drawing.Point(1250, 600));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 600),
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 600),
 					new System.Drawing.Point(1250, 600));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
 					new System.Drawing.Point(0, 600));
 
 				bmp.Save(imagePath);
@@ -13793,24 +13947,24 @@ namespace PracticePerformanceAssessmentDataAccess
 					"Insurance Clerk"
 				};
 
-				Bitmap bmp = new Bitmap(1100, 900);
+				Bitmap bmp = new Bitmap(1120, 650);
 				Graphics graphics = Graphics.FromImage(bmp);
 				graphics.Clear(Color.White);
 
 				//Draw Header Rectangle 
-				Size size1 = new Size(1100, 100);
+				Size size1 = new Size(1120, 100);
 				System.Drawing.Rectangle rect1 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), size1);
 				//graphics.DrawRectangle(pen, rect1);
-				using (SolidBrush brush = new SolidBrush(Color.White))
+				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 51, 102, 153)))
 				{
 					graphics.FillRectangle(brush, rect1);
 				}
 
-				Size size2 = new Size(1100, 720);
+				Size size2 = new Size(1120, 500);
 				System.Drawing.Rectangle rect2 = new System.Drawing.Rectangle(new System.Drawing.Point(0, 100), size2);
 				//To write header text
 				StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.Black, rect1, format);
+				graphics.DrawString(graphHeader, new System.Drawing.Font("Arial", 25, FontStyle.Italic), Brushes.White, rect1, format);
 
 
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13818,7 +13972,7 @@ namespace PracticePerformanceAssessmentDataAccess
 					graphics.FillRectangle(brush, rect2);
 				}
 
-				Size size3 = new Size(1000, 640);
+				Size size3 = new Size(1000, 470);
 				System.Drawing.Rectangle rect3 = new System.Drawing.Rectangle(new System.Drawing.Point(60, 120), size3);
 				Pen pen = new Pen(Color.Black, 1);
 				using (SolidBrush brush = new SolidBrush(Color.White))
@@ -13831,7 +13985,7 @@ namespace PracticePerformanceAssessmentDataAccess
 				Size dataSizeCol1 = new Size(widthOfDataCol * 2, 60);
 				Size dataSizeRestCols = new Size(widthOfDataCol, 40);
 				int x1 = 100;
-				int y1 = 120;
+				int y1 = 90;
 				System.Drawing.Point pt1 = new System.Drawing.Point(x1 + (widthOfDataCol * 2), y1);
 				System.Drawing.Rectangle dataRect = new System.Drawing.Rectangle(pt1, new System.Drawing.Size(widthOfDataCol * 5, 20));
 
@@ -13843,18 +13997,18 @@ namespace PracticePerformanceAssessmentDataAccess
 
 				for (int j = 1; j <= headerList.Count(); j++)
 				{
-					y1 = 160;
+					y1 = 140;
 					pt1 = new System.Drawing.Point(x1, y1);
 					if (j == 1)
 						graphics.DrawString(headerList[j - 1], new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, new System.Drawing.Rectangle(pt1, dataSizeCol1), format);
 					else
 					{
 						Size tempSize = dataSizeRestCols;
-						tempSize.Height = 80;
+						tempSize.Height = 60;
 						graphics.DrawString(headerList[j - 1], new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, new System.Drawing.Rectangle(pt1, tempSize), format);
 					}
 
-					y1 = 280;
+					y1 = 210;
 					for (int i = 0; i < positionList.Count(); i++)
 					{
 						pt1 = new System.Drawing.Point(x1, y1);
@@ -13872,23 +14026,23 @@ namespace PracticePerformanceAssessmentDataAccess
 								graphics.DrawString("$" + medianHourlySal[i], new System.Drawing.Font("Arial", 15, FontStyle.Regular), Brushes.Black, dataRect, format);
 								break;
 							case 4:
-								//graphics.DrawString("$" + medianAnnuallySal[i], new System.Drawing.Font("Arial", 8, FontStyle.Bold), Brushes.Black, dataRect, format);
+								graphics.DrawString("$" + medianAnnualSal[i], new System.Drawing.Font("Arial", 8, FontStyle.Bold), Brushes.Black, dataRect, format);
 								break;
 						}
-						y1 += 60;
+						y1 += 45;
 					}
 					x1 += dataRect.Width - 10;
 				}
 
-				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1100, 900)));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-					new System.Drawing.Point(1100, 0));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(1100, 0),
-					new System.Drawing.Point(1100, 900));
-				graphics.DrawLine(new Pen(Brushes.Black, 5), new System.Drawing.Point(0, 900),
-					new System.Drawing.Point(1100, 900));
-				graphics.DrawLine(new Pen(Brushes.Black, 3), new System.Drawing.Point(0, 0),
-					new System.Drawing.Point(0, 900));
+				graphics.DrawRectangle(pen, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), new Size(1120, 650)));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+					new System.Drawing.Point(1120, 0));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(1100, 0),
+					new System.Drawing.Point(1120, 650));
+				graphics.DrawLine(new Pen(Brushes.Gray, 5), new System.Drawing.Point(0, 650),
+					new System.Drawing.Point(1120, 650));
+				graphics.DrawLine(new Pen(Brushes.Gray, 3), new System.Drawing.Point(0, 0),
+					new System.Drawing.Point(0, 650));
 
 
 				bmp.Save(imagePath);

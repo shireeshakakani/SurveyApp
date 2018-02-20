@@ -1868,7 +1868,7 @@ body {display:none;}
 
 											<span class="text-block"><strong style="color: #336699"><font style="font-size: 20px;"><font color="#1f497d" style="font-size: 26px;"><u>Practice&nbsp;</u></font></font></strong><strong style="color: #336699"><font style="font-size: 20px;"><font color="#1f497d" style="font-size: 26px;"><u>Performance&nbsp;Assessment&nbsp;</u></font></font></strong><strong><font style="font-size: 20px;"><br>
 												<br>
-												<font style="color:#000000;font-size:18px;">MBA Practice Essentials - Prepared for&nbsp;Essilor <font style="font-style:italic; font-size:18px">Eye Care</font> Experts&nbsp;&nbsp;<br>
+												<font style="color:#000000;font-size:18px;font-style:italic">MBA Practice Essentials - Prepared for&nbsp;Essilor <font style="font-style:italic; font-size:18px">Eye Care</font> Experts&nbsp;&nbsp;<br>
 													&nbsp;</font>
 
 
@@ -1906,12 +1906,12 @@ body {display:none;}
 												</strong>
 												<font color="#000000">&nbsp;</font><br>
 												<strong style="color: rgb(0, 0, 0);"><font style="font-size: 14px;">Printing:</font></strong><br>
-												<font color="#000000">At any time you may print out the survey by clicking the <strong>Print</strong> button at the bottom of each page. A new window will open with the entire survey on one screen for you to print. You will still need to key in your answers to submit them, but if you need to refer to some other documents to answer some questions, you may find it helpful to print out the questionnaire. </font>
+												<font color="#000000">At any time you may print out the survey by clicking the <strong style="color:black !important">Print</strong> button at the bottom of each page. A new window will open with the entire survey on one screen for you to print. You will still need to key in your answers to submit them, but if you need to refer to some other documents to answer some questions, you may find it helpful to print out the questionnaire. </font>
 												<br>
 												<br>
 												<font style="color: rgb(0, 0, 0); font-size: 14px;"><strong>Entering Numerical Data:</strong><br>
 												</font><font color="#000000">Some questions require that the sum of your responses to parts of the question add to 100%. The data collection software will alert you if this requirement has not been met. When reporting percentages in the questionnaire, enter them as integers, not as decimals and do not enter a % sign. For example: enter 11, not 0.11 or .11 or 11%</font><br>
-												<font color="#000000">When answering numerical questions </font><strong>please do not use commas</strong><font color="#000000">. For example: enter 1000 instead of 1,000.</font><br>
+												<font color="#000000">When answering numerical questions </font><strong style="color:black !important">please do not use commas</strong><font color="#000000">. For example: enter 1000 instead of 1,000.</font><br>
 												<font color="#000000">When currency values are requested, report values to the nearest dollar. Do not round to the nearest thousand dollars for questions about practice revenue and expenses. Do not type in dollar signs.</font><br>
 												<font color="#000000">&nbsp;</font><br>
 												<strong style="color: rgb(0, 0, 0);"><font style="font-size: 14px;">Stopping and Saving mid-survey:</font></strong><br>
